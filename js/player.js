@@ -240,17 +240,10 @@ function drawPlayer(){
 }
 // パンを つつむ あわ（あわゲージで おおきさが かわる）
 function drawPlayerBubble(p,cx,by,sx,sy){
-  const c=ctx,a=clamp(p.air/AIR_MAX,0,1),low=a<0.25;
+  const a=clamp(p.air/AIR_MAX,0,1),low=a<0.25;
   const R=(20+6*a)*p.big,wob=low?Math.sin(G.t*0.5)*2:0;
-  const rx=R*(0.85+0.15*sx)+wob,ry=R*(0.85+0.15*sy)-wob,y=by-ry*0.92;
-  const g=c.createRadialGradient(cx-rx*0.3,y-ry*0.35,2,cx,y,Math.max(rx,ry));
-  g.addColorStop(0,'rgba(255,255,255,0.22)');g.addColorStop(0.7,'rgba(170,225,255,0.1)');g.addColorStop(1,'rgba(205,240,255,0.45)');
-  ell(c,cx,y,rx,ry,g,low&&Math.floor(G.t/8)%2===0?'rgba(255,150,150,0.9)':'rgba(255,255,255,0.8)',2);
-  c.lineWidth=2;
-  c.strokeStyle='rgba(255,170,235,0.5)';c.beginPath();c.ellipse(cx,y,rx-3,ry-3,0,0.25,1.3);c.stroke();
-  c.strokeStyle='rgba(140,255,215,0.45)';c.beginPath();c.ellipse(cx,y,rx-3,ry-3,0,3.5,4.4);c.stroke();
-  ell(c,cx-rx*0.45,y-ry*0.45,rx*0.2,ry*0.1,'rgba(255,255,255,0.9)',null,0,-0.7);
-  ell(c,cx+rx*0.5,y+ry*0.38,2.2,2.2,'rgba(255,255,255,0.6)');
+  const rx=R*(0.85+0.15*sx)+wob,ry=R*(0.85+0.15*sy)-wob;
+  drawBubble(ctx,cx,by-ry*0.92,rx,ry,{warn:low});
 }
 function drawWhip(p){
   const{pts,a}=whipPts(p);

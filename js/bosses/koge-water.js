@@ -86,14 +86,7 @@ function drawBossBubble(b){
   if(b.popped)return;
   const c=ctx,a=b.hp/b.max,low=a<0.3,w=b.bw||0,wv=Math.sin(G.t*0.6)*w*0.08;
   const bcx=b.x+b.w/2+(b.jit||0),rx=72*(1+wv)*Math.pow(b.sqx||1,0.3),ry=68*(1-wv)*Math.pow(b.sqy||1,0.3),cy=b.y+b.h-58;
-  const g=c.createRadialGradient(bcx-rx*0.3,cy-ry*0.35,4,bcx,cy,Math.max(rx,ry));
-  g.addColorStop(0,'rgba(255,255,255,0.2)');g.addColorStop(0.7,'rgba(170,225,255,0.08)');g.addColorStop(1,'rgba(205,240,255,0.42)');
-  ell(c,bcx,cy,rx,ry,g,low&&Math.floor(G.t/8)%2===0?'rgba(255,150,150,0.95)':'rgba(255,255,255,0.85)',3);
-  c.lineWidth=3;
-  c.strokeStyle='rgba(255,170,235,0.5)';c.beginPath();c.ellipse(bcx,cy,rx-5,ry-5,0,0.25,1.3);c.stroke();
-  c.strokeStyle='rgba(140,255,215,0.45)';c.beginPath();c.ellipse(bcx,cy,rx-5,ry-5,0,3.5,4.4);c.stroke();
-  ell(c,bcx-rx*0.45,cy-ry*0.48,rx*0.2,ry*0.09,'rgba(255,255,255,0.9)',null,0,-0.7);
-  ell(c,bcx+rx*0.55,cy+ry*0.4,4,4,'rgba(255,255,255,0.6)');
+  drawBubble(c,bcx,cy,rx,ry,{lw:3,warn:low});
   const cracks=Math.floor((1-a)*9);
   c.strokeStyle='rgba(255,255,255,0.9)';c.lineWidth=2;c.lineJoin='round';
   for(let i=0;i<cracks;i++){

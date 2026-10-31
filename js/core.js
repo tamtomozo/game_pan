@@ -30,6 +30,21 @@ function txt(s,x,y,size,fill='#fff',stroke='#5a2a0c',align='center',lw){
   if(stroke){ctx.lineWidth=lw||Math.max(3,size/5);ctx.strokeStyle=stroke;ctx.strokeText(s,x,y);}
   ctx.fillStyle=fill;ctx.fillText(s,x,y);
 }
+// あわ（プレイヤー・ボス・シャボンで つかう）
+//   lw:ふちの ふとさ  warn:あかく てんめつ  plain:にじいろの ふち なしの こい あわ（シャボン）
+function drawBubble(c,x,y,rx,ry,o={}){
+  const lw=o.lw||2,g=c.createRadialGradient(x-rx*0.3,y-ry*0.35,lw,x,y,Math.max(rx,ry));
+  if(o.plain){g.addColorStop(0,'rgba(255,255,255,0.6)');g.addColorStop(0.6,'rgba(170,230,255,0.25)');g.addColorStop(1,'rgba(210,245,255,0.65)');}
+  else{g.addColorStop(0,'rgba(255,255,255,0.22)');g.addColorStop(0.7,'rgba(170,225,255,0.1)');g.addColorStop(1,'rgba(205,240,255,0.45)');}
+  ell(c,x,y,rx,ry,g,o.warn&&Math.floor(G.t/8)%2===0?'rgba(255,150,150,0.9)':'rgba(255,255,255,0.85)',lw);
+  if(!o.plain){
+    const k=lw*2-1;c.lineWidth=lw;
+    c.strokeStyle='rgba(255,170,235,0.5)';c.beginPath();c.ellipse(x,y,rx-k,ry-k,0,0.25,1.3);c.stroke();
+    c.strokeStyle='rgba(140,255,215,0.45)';c.beginPath();c.ellipse(x,y,rx-k,ry-k,0,3.5,4.4);c.stroke();
+    ell(c,x+rx*0.52,y+ry*0.39,lw*1.3,lw*1.3,'rgba(255,255,255,0.6)');
+  }
+  ell(c,x-rx*0.44,y-ry*0.46,rx*0.21,ry*0.11,'rgba(255,255,255,0.9)',null,0,-0.7);
+}
 function seeded(n,seed){let s=seed;const r=()=>(s=(s*16807)%2147483647)/2147483647;return[...Array(n)].map(()=>[r(),r(),r()]);}
 const CRUMB_PTS=seeded(36,11);
 

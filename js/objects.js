@@ -175,9 +175,7 @@ function drawItems(){
       drawHeart(cx,yy+2,6.5,true);
     }else if(it.type==='air'){
       const r=it.w/2+Math.sin((G.t+it.t)*0.12)*0.8,yy=cy+(it.rise?0:Math.sin((G.t+it.t)*0.06)*3);
-      const g=ctx.createRadialGradient(cx-r*0.3,yy-r*0.3,1,cx,yy,r);g.addColorStop(0,'rgba(255,255,255,0.6)');g.addColorStop(0.6,'rgba(170,230,255,0.25)');g.addColorStop(1,'rgba(210,245,255,0.65)');
-      ell(ctx,cx,yy,r,r,g,'rgba(255,255,255,0.9)',2);
-      ell(ctx,cx-r*0.4,yy-r*0.4,r*0.26,r*0.15,'rgba(255,255,255,0.95)',null,0,-0.7);
+      drawBubble(ctx,cx,yy,r,r,{plain:true});
     }else if(it.type==='ability'){
       if(it.life<120&&it.life%8<4)continue;
       const yy=cy;
