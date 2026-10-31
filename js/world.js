@@ -60,7 +60,7 @@ function spawnEnemy(type,x,y){
   const D=ENEMY[type];
   const e={type,x,y,w:D.w,h:D.h,vx:0,vy:0,hp:D.hp,dir:-1,t:(Math.random()*60)|0,hit:0,shake:0,active:false,dead:false,suckT:0,thrown:0,rot:0,onGround:false,wind:0,windMax:1,act:'',dash:0,dashSp:0,cool:0,sqx:1,sqy:1,lean:0};
   e.pf=0;
-  if(['bird','fish','jelly','fugu','lantern'].includes(type)){e.baseY=y;e.homeX=x;}
+  e.baseY=y;e.homeX=x; // ふわふわ うごく てきの きじゅん
   enemies.push(e);return e;
 }
 function startGame(){G.score=0;G.grains=0;G.cp=null;loadStage(0);}

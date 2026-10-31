@@ -227,9 +227,8 @@ function drawDarkness(ox,oy){
   c.save();c.globalCompositeOperation='lighter';
   const glow=(x,y,r,col)=>{const X=sx(x),Y=sy(y);if(X<-r||X>W+r)return;const gg=c.createRadialGradient(X,Y,0,X,Y,r);gg.addColorStop(0,col);gg.addColorStop(1,'rgba(0,0,0,0)');c.fillStyle=gg;c.fillRect(X-r,Y-r,r*2,r*2);};
   for(const e of enemies){
-    if(e.dead)continue;
-    if(e.type==='jelly')glow(e.x+e.w/2,e.y+e.h*0.4,48,'rgba(255,120,220,0.4)');
-    else if(e.type==='lantern'){const L=lanternLure(e);glow(L.x,L.y,70,'rgba(255,235,130,0.6)');}
+    const gl=!e.dead&&ENEMY[e.type].glow;
+    if(gl){const q=gl(e);glow(q.x,q.y,q.r,q.col);}
   }
   for(const it of items){
     if(it.type==='air')glow(it.x+it.w/2,it.y+it.h/2,32,'rgba(160,230,255,0.4)');

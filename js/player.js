@@ -150,7 +150,7 @@ function doInhale(){
   for(const e of enemies){
     if(e.dead||!e.active)continue;
     const cx=e.x+e.w/2,cy=e.y+e.h/2;if(!inCone(cx,cy))continue;
-    if(ENEMY[e.type].noInhale||(e.type==='fugu'&&e.pf>0.5)){e.shake=3;continue;}
+    if(cantInhale(e)){e.shake=3;continue;}
     const dx=mx-cx,dy=my-cy,d=Math.hypot(dx,dy)||1,sp=Math.min(d,2.6+(R-d)*0.075);
     e.x+=dx/d*sp;e.y+=dy/d*sp;e.suckT=3;
     if(d<18){swallow(e);return;}
