@@ -33,7 +33,7 @@ function updatePlayer(){
   if(--p.blinkT<-6)p.blinkT=(rand(120,280))|0;
   if(!K.act||P.act)p.needRelease=false;
   const actH=K.act&&!p.needRelease,actP=P.act;
-  const f=p.form,move=(K.left?-1:0)+(K.right?1:0),wet=lv.water;
+  const f=p.form,move=(K.left?-1:0)+(K.right?1:0),wet=lv.water,ph=lv.ph;
   p.inhaling=f==='plain'&&actH&&p.hurtT<=0;
   const breathing=f==='curry'&&actH&&p.hurtT<=0;
 
@@ -52,12 +52,12 @@ function updatePlayer(){
     const rc=rollCircle();breakAt(rc.x+p.face*rc.r*0.7,rc.y,rc.r*0.75);
   }else if(p.hurtT>0){p.vx*=0.93;}
   else{
-    let mx=wet?3:3.8;if(p.inhaling)mx=0.9;else if(breathing)mx=1.3;else if(p.whip>0&&p.onGround)mx=1.6;
+    let mx=ph.run;if(p.inhaling)mx=0.9;else if(breathing)mx=1.3;else if(p.whip>0&&p.onGround)mx=1.6;
     if(move){
-      p.vx+=move*(p.onGround?0.6:wet?0.3:0.42);
+      p.vx+=move*(p.onGround?0.6:ph.airAccel);
       if(p.vx>mx)p.vx=Math.max(mx,p.vx-0.8);if(p.vx<-mx)p.vx=Math.min(-mx,p.vx+0.8);
       if(!p.inhaling&&!breathing&&p.whip<=0)p.face=move;
-    }else{p.vx*=p.onGround?0.7:wet?0.95:0.92;if(Math.abs(p.vx)<0.1)p.vx=0;}
+    }else{p.vx*=p.onGround?0.7:ph.airDrag;if(Math.abs(p.vx)<0.1)p.vx=0;}
   }
   // ジャンプ
   if(p.onGround){p.coyote=6;p.jumps=2;}else if(p.coyote>0)p.coyote--;
@@ -65,7 +65,7 @@ function updatePlayer(){
   if(p.jbuf>0&&!p.inhaling&&p.hurtT<=0){
     if(K.down&&p.onGround&&p.onOneWay){p.dropT=14;p.jbuf=0;p.coyote=0;p.y+=2;}
     else if(wet){ // みずのなか：おすたびに ひとかき
-      p.vy=p.coyote>0?-6.6:-5.2;p.coyote=0;p.jbuf=0;p.s=1.25;p.sv=0;sfx('swim');bubbles(p.x+p.w/2,p.y+p.h,3);
+      p.vy=p.coyote>0?ph.strokeGround:ph.stroke;p.coyote=0;p.jbuf=0;p.s=1.25;p.sv=0;sfx('swim');bubbles(p.x+p.w/2,p.y+p.h,3);
     }
     else if(p.coyote>0){p.vy=-11;p.coyote=0;p.jbuf=0;p.s=1.32;p.sv=0;sfx('jump');dust(p.x+p.w/2,p.y+p.h,4);}
     else if(P.jump&&p.jumps>0){
@@ -76,22 +76,16 @@ function updatePlayer(){
   }
   // ながれ
   if(wet){
-    const ct=tileAtP(p.x+p.w/2,p.y+p.h/2),tgt=ct==='>'?2.6:ct==='<'?-2.6:0;
+    const ct=tileAtP(p.x+p.w/2,p.y+p.h/2),tgt=ct==='>'?ph.current:ct==='<'?-ph.current:0;
     p.curX=(p.curX||0)+(tgt-(p.curX||0))*0.12;
-    if(ct==='^')p.vy=Math.max(p.vy-0.55,-4.8);
+    if(ct==='^')p.vy=Math.max(p.vy-ph.upCurrent,ph.upCurrentMax);
     if('<>^'.includes(ct)&&G.t%6===0)bubbles(p.x+p.w/2,p.y+p.h/2,1,0.5);
   }
   // 重力
-  let g=0.55,maxFall=10;p.floating=false;
-  if(wet){
-    g=0.2;maxFall=2.8;
-    if(p.vy<0&&!K.jump)g=0.32;
-    if(K.down&&!p.onGround){g=0.35;maxFall=5;}
-    else if(K.jump&&p.vy>0&&p.roll<=0&&p.hurtT<=0){g=0.1;maxFall=1.2;p.floating=true;}
-  }else{
-    if(p.vy<0&&!K.jump&&p.springT<=0)g=1.1;
-    if(K.jump&&p.vy>0&&p.roll<=0&&p.hurtT<=0){g=0.2;maxFall=2.3;p.floating=true;}
-  }
+  let g=ph.grav,maxFall=ph.maxFall;p.floating=false;
+  if(p.vy<0&&!K.jump&&(wet||p.springT<=0))g=ph.riseGrav;
+  if(wet&&K.down&&!p.onGround){g=ph.sinkGrav;maxFall=ph.sinkFall;}
+  else if(K.jump&&p.vy>0&&p.roll<=0&&p.hurtT<=0){g=ph.floatGrav;maxFall=ph.floatFall;p.floating=true;}
   p.vy=Math.min(p.vy+g,maxFall);
   const wasGround=p.onGround,preVy=p.vy;
   p.prevBottom=p.y+p.h;
@@ -200,7 +194,7 @@ function popBubble(){
 function hurtPlayer(srcX){
   const p=player;if(p.dead||p.inv>0||p.roll>0||G.state!=='play')return;
   p.hp--;p.inv=100;p.hurtT=16;
-  const kx=(p.x+p.w/2<srcX)?-1:1;p.vx=kx*4.5;p.vy=lv.water?-3.5:-6;p.s=0.6;p.sv=0;p.whip=0;
+  const kx=(p.x+p.w/2<srcX)?-1:1;p.vx=kx*4.5;p.vy=lv.ph.hurtVy;p.s=0.6;p.sv=0;p.whip=0;
   G.shake=8;sfx('hurt');burst(p.x+p.w/2,p.y+p.h/2,['#fff','#ffd36a'],8,4);
   if(p.form!=='plain'){
     items.push({type:'ability',ab:p.form,x:p.x+1,y:p.y-6,w:22,h:22,vx:-kx*2.5,vy:-8,bounce:-5,life:480,delay:45,t:0});

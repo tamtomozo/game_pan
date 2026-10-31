@@ -118,7 +118,7 @@ function bossContact(){
     if(p.roll>0){
       const rc=rollCircle();
       if(circleRect(rc.x,rc.y,rc.r,hb)){
-        hitBoss(4,20);p.roll=0;p.rollCd=25;p.hurtT=14;p.vx=(pcx<bcx?-1:1)*6;p.vy=lv.water?-4:-7;p.inv=Math.max(p.inv,30);G.shake=8;
+        hitBoss(4,20);p.roll=0;p.rollCd=25;p.hurtT=14;p.vx=(pcx<bcx?-1:1)*6;p.vy=lv.ph.rollBounceVy;p.inv=Math.max(p.inv,30);G.shake=8;
       }
     }else if(overlap(phb(),hb)){
       if(isStomp(hb.y+6)){hitBoss(2,20);stompBounce(pcx,hb.y,-11);}

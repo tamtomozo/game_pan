@@ -21,6 +21,25 @@ const FORMS={
 const AREA_NAMES={1:'パンの くに',2:'うみの せかい'};
 function stageLabel(i){const a=STAGES[i].area||1;let n=0;for(let j=0;j<=i;j++)if((STAGES[j].area||1)===a)n++;return a+'-'+n;}
 const AIR_MAX=100,AIR_DRAIN=AIR_MAX/(60*40); // まんたんで 40びょう もつ
+// ぶつり：りく と みずのなか（ステージを よみこむと lv.ph に はいる）
+const PHYS={
+  land:{
+    run:3.8,airAccel:0.42,airDrag:0.92,              // はしる はやさ・くうちゅうでの かそく と ブレーキ
+    grav:0.55,maxFall:10,riseGrav:1.1,               // じゅうりょく・おちる はやさ・ジャンプを はなしたときの じゅうりょく
+    floatGrav:0.2,floatFall:2.3,                     // ジャンプ ながおしで ふんわり
+    hurtVy:-6,stompMul:1,stompBoost:3,rollBounceVy:-7, // やられ・ふみつけ・ごろごろで ボスに あたったときの はねかえり
+    clearGrav:0.55,clearFall:10,clearHop:-8,         // クリアの ぴょんぴょん
+  },
+  water:{
+    run:3,airAccel:0.3,airDrag:0.95,
+    grav:0.2,maxFall:2.8,riseGrav:0.32,
+    floatGrav:0.1,floatFall:1.2,sinkGrav:0.35,sinkFall:5, // ↓で はやく しずむ
+    stroke:-5.2,strokeGround:-6.6,                   // ひとかき（じめんからは つよめ）
+    current:2.6,upCurrent:0.55,upCurrentMax:-4.8,    // ながれ
+    hurtVy:-3.5,stompMul:0.72,stompBoost:2,rollBounceVy:-4,
+    clearGrav:0.2,clearFall:2.8,clearHop:-5,
+  },
+};
 const ABILS=['curry','anko','melon','wiener'];
 
 // ---- ステージ（下から行をそろえて連結。上は自動で空白） ----

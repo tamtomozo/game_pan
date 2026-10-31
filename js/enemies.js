@@ -21,8 +21,8 @@ function defineEnemy(type,def){ENEMY[type]=def;ECHAR[def.char]=type;}
 function isStomp(topY){const p=player;return p.vy>=0&&p.prevBottom!=null&&p.prevBottom<=topY+10;}
 function stompBounce(x,y,v=-8){
   const p=player;
-  if(lv.water)v*=0.72;
-  p.vy=K.jump?v-(lv.water?2:3):v;p.jumps=2;p.s=0.62;p.sv=0;p.y=Math.min(p.y,y-p.h);
+  v*=lv.ph.stompMul;
+  p.vy=K.jump?v-lv.ph.stompBoost:v;p.jumps=2;p.s=0.62;p.sv=0;p.y=Math.min(p.y,y-p.h);
   sfx('stomp');ring(x,y,'#fff',22);sparkle(x,y,5);dust(x,y,3);
   popText(x,y-20,'ふみっ！','#fff');
 }

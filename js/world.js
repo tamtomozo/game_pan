@@ -25,7 +25,7 @@ function setBanner(text,sub,t,form){G.banner={text,sub,t,max:t,form};}
 function loadStage(i,cp){
   const S=STAGES[i];G.stage=i;G.theme=S.theme;
   const rows=buildRows(S.chunks);
-  lv={w:rows[0].length,t:rows.map(r=>r.split('')),wob:{},arenaX:null,arenaCol:null,locked:false,water:!!S.water,dark:!!S.dark,darkK:1,vents:[]};
+  lv={w:rows[0].length,t:rows.map(r=>r.split('')),wob:{},arenaX:null,arenaCol:null,locked:false,water:!!S.water,ph:PHYS[S.water?'water':'land'],dark:!!S.dark,darkK:1,vents:[]};
   enemies=[];items=[];projs=[];parts=[];signs=[];checks=[];goal=null;boss=null;
   let start=null,si=0;
   for(let x=0;x<lv.w;x++)for(let y=0;y<ROWS;y++){
