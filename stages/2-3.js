@@ -1,6 +1,6 @@
 'use strict';
 // ステージ 2-3 まっくら しんかい（マップの きごうは js/data.js の せつめいを みてね）
-STAGES.push({name:'まっくら しんかい',theme:4,bgm:'deep',water:true,dark:true,area:2,
+STAGES.push({name:'まっくら しんかい',theme:4,bgm:'deep',water:true,dark:true,area:2,boss:'kogeWater',
  signs:['まっくらで みえにくい… ひかる ものを めじるしに すすもう','チョウチンアンコウは おいかけてくる！ ふんで やっつけよう',
    'このさきに あわに つつまれた こげこげ大王！ あわを こわせば かちだ！'],
  chunks:[`

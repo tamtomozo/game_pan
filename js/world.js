@@ -40,7 +40,7 @@ function loadStage(i,cp){
     else if(c==='K')checks.push({x:x*TS+16,y:(y+1)*TS,on:false});
     else if(c==='G')goal={x:x*TS+16,y:(y+1)*TS};
     else if(c==='|'){lv.arenaX=x*TS;lv.arenaCol=x;}
-    else if(c==='X')boss={x:x*TS-34,y:(y+1)*TS-92,w:100,h:92,vx:0,vy:0,hp:30,max:30,state:'sleep',t:0,dir:-1,hit:0,s:1,sv:0,mouth:0,jit:0,dropT:0,onGround:true,sqx:1,sqy:1,lean:0,water:lv.water};
+    else if(c==='X')boss=makeBoss(S.boss,x,y);
     else clear=false;
     if(clear)lv.t[y][x]=(c==='*'&&x>0&&'<>^'.includes(lv.t[y][x-1]))?lv.t[y][x-1]:'.'; // ながれの なかの こむぎ
   }

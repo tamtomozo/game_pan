@@ -23,9 +23,10 @@ function drawHUD(){
   if(boss&&boss.state!=='sleep'&&boss.state!=='gone'){
     const bw=360,bx=W/2-bw/2,by=H-38;
     rr(c,bx-8,by-22,bw+16,44,12);c.fillStyle='rgba(30,10,5,0.75)';c.fill();
-    txt(boss.water?'こげこげ大王の あわ':'こげこげ大王',W/2,by-10,13,boss.water?'#bff0ff':'#ffd36a',null);
+    const hc=boss.def.hudColors;
+    txt(boss.def.hudName,W/2,by-10,13,hc[0],null);
     rr(c,bx,by,bw,12,6);c.fillStyle='#3a1a10';c.fill();
-    rr(c,bx,by,Math.max(0.001,bw*boss.hp/boss.max),12,6);const hg=c.createLinearGradient(bx,0,bx+bw,0);hg.addColorStop(0,boss.water?'#3aa8f4':'#ff4a2a');hg.addColorStop(1,boss.water?'#bff0ff':'#ffb43a');c.fillStyle=hg;c.fill();
+    rr(c,bx,by,Math.max(0.001,bw*boss.hp/boss.max),12,6);const hg=c.createLinearGradient(bx,0,bx+bw,0);hg.addColorStop(0,hc[1]);hg.addColorStop(1,hc[2]);c.fillStyle=hg;c.fill();
   }else if(G.stage===0&&!G.paused){
     txt('←→:いどう　Z:ジャンプ(ながおし:ふんわり)　X:すいこみ/こうげき　↓/C:はきだす　P:ポーズ　M:おと',W/2,H-14,13,'#fff','rgba(70,35,10,0.75)');
   }else if(STAGES[G.stage].waterHint&&!G.paused){

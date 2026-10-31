@@ -1,6 +1,6 @@
 'use strict';
 // ステージ 1-3 こげこげオーブン城（マップの きごうは js/data.js の せつめいを みてね）
-STAGES.push({name:'こげこげオーブン城',theme:2,bgm:'s3',
+STAGES.push({name:'こげこげオーブン城',theme:2,bgm:'s3',boss:'koge',
  signs:['このさきに こげこげ大王！ すきな パンに へんしんしていこう'],
  chunks:[`
 ..............................
