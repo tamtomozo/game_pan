@@ -3,7 +3,7 @@
 // =====================================================================
 //  ゲーム状態
 // =====================================================================
-const G={state:'title',stage:0,score:0,grains:0,t:0,freeze:0,shake:0,flash:0,banner:null,cp:null,maxHp:5,paused:false,psel:0,click:null,clearT:0,endT:0,theme:0};
+const G={state:'title',stage:0,score:0,grains:0,t:0,freeze:0,shake:0,flash:0,banner:null,cp:null,maxHp:5,paused:false,psel:0,click:null,clearT:0,endT:0,theme:'kitchen'};
 let lv,player,enemies=[],items=[],projs=[],parts=[],boss=null,signs=[],checks=[],goal=null;
 const cam={x:0,y:ROWS*TS-H,minX:0,maxX:0};
 

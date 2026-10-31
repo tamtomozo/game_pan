@@ -1,6 +1,6 @@
 'use strict';
 // ステージ 2-2 ゆらゆら サンゴしょう（マップの きごうは js/data.js の せつめいを みてね）
-STAGES.push({name:'ゆらゆら サンゴしょう',theme:3,bgm:'reef',water:true,area:2,
+STAGES.push({name:'ゆらゆら サンゴしょう',theme:'sea',bgm:'reef',water:true,area:2,
  signs:['ながれに のると すいーっと はやく すすめるよ！','フグは ちかづくと ふくらんで トゲトゲに！ とおくから すいこもう'],
  chunks:[`
 ..............................

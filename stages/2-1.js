@@ -1,6 +1,6 @@
 'use strict';
 // ステージ 2-1 ぷくぷく うみのそこ（マップの きごうは js/data.js の せつめいを みてね）
-STAGES.push({name:'ぷくぷく うみのそこ',theme:3,bgm:'water',water:true,area:2,waterHint:true,
+STAGES.push({name:'ぷくぷく うみのそこ',theme:'sea',bgm:'water',water:true,area:2,waterHint:true,
  signs:['みずの なかでは Z を おすたびに すいすい およげるよ！','あわが なくなると ふやけちゃう！ シャボンや かいの あわで ほきゅうしよう',
    'ウニは ふめないし すいこめない！ へんしんして たおそう'],
  chunks:[`

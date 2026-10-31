@@ -1,6 +1,6 @@
 'use strict';
 // ステージ 1-2 こむぎばたけ（マップの きごうは js/data.js の せつめいを みてね）
-STAGES.push({name:'こむぎばたけ',theme:1,bgm:'s2',
+STAGES.push({name:'こむぎばたけ',theme:'field',bgm:'s2',
  signs:['いろんな ぐざいを たべて ためしてみよう！','フォークは すいこめない！ へんしんして たおそう'],
  chunks:[`
 ..............................

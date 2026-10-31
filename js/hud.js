@@ -76,7 +76,7 @@ function drawBreadRow(y0,big){
   });
 }
 function drawTitle(){
-  drawBG(1,G.t*1.5);
+  drawBG('field',G.t*1.5);
   const bob=Math.sin(G.t*0.05)*4;
   txt('やきたて！',W/2,92+bob,40,'#fff8e0','#a0521c',undefined,8);
   txt('まるパン だいぼうけん',W/2,152+bob,64,'#ffd36a','#7a3a10',undefined,11);
@@ -89,7 +89,7 @@ function drawTitle(){
   drawParticles();
 }
 function drawEnding(){
-  drawBG(1,G.endT*2);
+  drawBG('field',G.endT*2);
   txt('ぜんぶ おいしく やけました！',W/2,110,46,'#ffd36a','#7a3a10',undefined,9);
   txt('こげこげ大王を 2かいも やっつけて パンの せかいに へいわが もどった！',W/2,170,20,'#fff','#7a3a10');
   drawBreadRow(360,false);
