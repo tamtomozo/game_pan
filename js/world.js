@@ -3,7 +3,7 @@
 // =====================================================================
 //  ゲーム状態
 // =====================================================================
-const G={state:'title',stage:0,score:0,grains:0,t:0,freeze:0,shake:0,flash:0,banner:null,cp:null,maxHp:5,paused:false,psel:0,click:null,clearT:0,endT:0,theme:'kitchen'};
+const G={state:'title',stage:0,score:0,grains:0,t:0,freeze:0,shake:0,flash:0,banner:null,cp:null,carryForm:'plain',maxHp:5,paused:false,psel:0,click:null,clearT:0,endT:0,theme:'kitchen'};
 let lv,player,enemies=[],items=[],projs=[],parts=[],boss=null,signs=[],checks=[],goal=null;
 const cam={x:0,y:ROWS*TS-H,minX:0,maxX:0};
 
@@ -46,10 +46,15 @@ function loadStage(i,cp){
   }
   let sx=start.x*TS+4,sy=(start.y+1)*TS-26;
   if(cp){sx=cp.x-12;sy=cp.y-26;for(const k of checks)if(k.x===cp.x)k.on=true;}
-  player={x:sx,y:sy,w:24,h:26,vx:0,vy:0,face:1,onGround:false,form:'plain',hp:G.maxHp,inv:0,s:1,sv:0,jumps:2,coyote:0,jbuf:0,dropT:0,
+  player={x:sx,y:sy,w:24,h:26,vx:0,vy:0,face:1,onGround:false,form:G.carryForm,hp:G.maxHp,inv:0,s:1,sv:0,jumps:2,coyote:0,jbuf:0,dropT:0,
     roll:0,rollCd:0,big:1,rot:0,whip:0,whipHit:new Set(),fireT:0,inhaling:false,blinkT:120,walkT:0,dead:false,deathT:0,springT:0,
     hurtT:0,needRelease:false,lastSafe:{x:sx,y:sy},t:0,air:AIR_MAX};
+  // もちこした パンの かたちは この1かいだけ（やられたり やりなおしたりすると まるパン）
+  const carried=player.form!=='plain';
+  if(carried)player.needRelease=true; // X を おしたまま はじまっても すぐ こうげき しない
+  G.carryForm='plain';
   cam.minX=0;cam.maxX=lv.w*TS-W;cam.x=clamp(player.x-W/2+80,cam.minX,cam.maxX);
+  if(carried)popText(Math.max(player.x+player.w/2,cam.x+110),player.y-30,FORMS[player.form].name+' の まま！','#fff6b0');
   G.state='play';G.freeze=0;G.paused=false;G.flash=0;
   if(cp)setBanner('もういっかい！','',70);
   else if(i>0&&(STAGES[i-1].area||1)!==(S.area||1))setBanner('エリア'+(S.area||1)+'　'+AREA_NAMES[S.area||1],'ステージ '+stageLabel(i)+'　'+S.name,200);
@@ -63,7 +68,7 @@ function spawnEnemy(type,x,y){
   e.baseY=y;e.homeX=x; // ふわふわ うごく てきの きじゅん
   enemies.push(e);return e;
 }
-function startGame(){G.score=0;G.grains=0;G.cp=null;loadStage(0);}
+function startGame(){G.score=0;G.grains=0;G.cp=null;G.carryForm='plain';loadStage(0);}
 
 // ---------- 物理 ----------
 function moveBody(b){

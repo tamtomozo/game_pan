@@ -124,7 +124,11 @@ function updateClear(){
   if(p.onGround&&G.clearT>30&&G.clearT%45===0){p.vy=ph.clearHop;p.s=1.3;p.sv=0;sfx('jump');}
   springPlayer();p.face=1;p.walkT=0;
   if((G.clearT>150&&(P.start||P.jump||P.act))||G.clearT>360){
-    if(G.stage<STAGES.length-1){G.cp=null;loadStage(G.stage+1);}
+    if(G.stage<STAGES.length-1){
+      const nx=G.stage+1;
+      G.carryForm=(STAGES[nx].area||1)===(STAGES[G.stage].area||1)?p.form:'plain'; // おなじ エリアなら パンの かたちを もちこす
+      G.cp=null;loadStage(nx);
+    }
     else{G.state='ending';G.endT=0;playBGM('title');}
   }
 }
