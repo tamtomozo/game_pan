@@ -27,6 +27,9 @@ function updatePlayer(){
       p.vy+=(0.7-p.vy)*0.04;p.y+=p.vy;p.rot=Math.sin(p.deathT*0.07)*0.3;
       if(p.deathT%9===0)bubbles(p.x+p.w/2,p.y,1,0.7);
       if(p.deathT%5===0)addP({x:p.x+p.w/2+rand(-12,12),y:p.y+p.h-rand(0,10),vy:rand(0.3,1),life:30,size:2.5,color:'rgba(190,225,255,0.8)'});
+    }else if(p.crushed){ // ぺしゃんこに なって めを まわす
+      p.vx=0;p.vy=Math.min(p.vy+0.5,8);moveBody(p);
+      if(p.deathT%12===0)addP({type:'star',x:p.x+p.w/2+Math.cos(p.deathT*0.3)*16,y:p.y+p.h-12,vy:-0.4,life:20,size:5,color:'#fff6b0'});
     }else{p.vy=Math.min(p.vy+0.35,8);p.y+=p.vy;p.rot+=0.12;}
     if(p.deathT<=0)loadStage(G.stage,G.cp);return;}
   if(p.inv>0)p.inv--;if(p.dropT>0)p.dropT--;if(p.rollCd>0)p.rollCd--;if(p.springT>0)p.springT--;if(p.hurtT>0)p.hurtT--;
@@ -102,7 +105,7 @@ function updatePlayer(){
     sfx('boing');ring(p.x+p.w/2,p.y+p.h,'rgba(255,240,200,0.9)',26);
   }
   if(p.onGround&&!p.onDough)p.lastSafe={x:p.x,y:p.y};
-  if(p.y>ROWS*TS+80){p.x=p.lastSafe.x;p.y=p.lastSafe.y-6;p.vy=0;p.vx=0;dust(p.x+p.w/2,p.y+p.h,8);sfx('puff');}
+  if(p.y>lv.rows*TS+80){p.x=p.lastSafe.x;p.y=p.lastSafe.y-6;p.vy=0;p.vx=0;dust(p.x+p.w/2,p.y+p.h,8);sfx('puff');}
   springPlayer();
   if(p.onGround&&Math.abs(p.vx)>0.3&&p.roll<=0)p.walkT+=Math.abs(p.vx)*0.085;else p.walkT=0;
   p.big+=((p.roll>0?2:1)-p.big)*0.2;
@@ -191,11 +194,13 @@ function popBubble(){
   popText(cx,cy-44,'あわが われちゃった！','#c8f0ff');
   p.inv=0;p.roll=0;hurtPlayer(cx-p.face);
 }
-function hurtPlayer(srcX){
+// crush：うえから おしつぶされた（いわ・ボスの ドスーン）
+function hurtPlayer(srcX,crush){
   const p=player;if(p.dead||p.inv>0||p.roll>0||G.state!=='play')return;
   p.hp--;p.inv=100;p.hurtT=16;
   const kx=(p.x+p.w/2<srcX)?-1:1;p.vx=kx*4.5;p.vy=lv.ph.hurtVy;p.s=0.6;p.sv=0;p.whip=0;
   G.shake=8;sfx('hurt');burst(p.x+p.w/2,p.y+p.h/2,['#fff','#ffd36a'],8,4);
+  if(crush){p.s=0.45;p.vy=0;sfx('squash');if(p.hp>0)popText(p.x+p.w/2,p.y-14,'ぺしゃんこ！','#fff');}
   if(p.form!=='plain'){
     items.push({type:'ability',ab:p.form,x:p.x+1,y:p.y-6,w:22,h:22,vx:-kx*2.5,vy:-8,bounce:-5,life:480,delay:45,t:0});
     p.form='plain';
@@ -203,6 +208,7 @@ function hurtPlayer(srcX){
   if(p.hp<=0){
     p.dead=true;p.rot=0;stopBGM();G.shake=10;
     if(lv.water){p.deathT=150;p.vy=-2;p.s=1;p.sv=0;sfx('soggy');ring(p.x+p.w/2,p.y+p.h/2,'rgba(220,245,255,0.95)',44);bubbles(p.x+p.w/2,p.y+p.h/2,16,1.6);}
+    else if(crush){p.crushed=true;p.deathT=140;p.vx=0;p.vy=0;sfx('die');}
     else{p.deathT=120;p.vy=-9;sfx('die');}
   }
 }
@@ -222,11 +228,12 @@ function drawPlayer(){
   ctx.save();ctx.translate(cx,by-hop);
   if(p.dead){ctx.translate(0,-B.h/2);ctx.rotate(p.rot);ctx.translate(0,B.h/2);}
   if(p.dead&&lv.water){const k=1+0.3*Math.min(1,1-p.deathT/150);sx*=k*1.08;sy*=k*0.94;}
+  if(p.dead&&p.crushed){sx=1.9;sy=0.32;}
   if(p.big>1.02||p.roll>0){const k=p.big;ctx.translate(0,-B.h*0.5*k);ctx.rotate(p.rot);ctx.scale(k,k);ctx.translate(0,B.h*0.5);}
   ctx.scale(sx,sy);
   const breathing=f==='curry'&&K.act&&!p.needRelease&&G.state==='play';
   let mouth='smile';if(p.inhaling)mouth='big';else if(breathing||p.whip>0||(f==='plain'&&!p.onGround&&p.floating))mouth='open';
-  drawBread(ctx,f,{face:p.face,mouth,blink:p.blinkT<0,hurt:p.hurtT>0,dead:p.dead,burnt:p.dead&&!lv.water,soggy:p.dead&&lv.water,happy:G.state==='clear'});
+  drawBread(ctx,f,{face:p.face,mouth,blink:p.blinkT<0,hurt:p.hurtT>0,dead:p.dead,burnt:p.dead&&!lv.water&&!p.crushed,soggy:p.dead&&lv.water,happy:G.state==='clear'});
   ctx.restore();
   if(lv.water&&!p.dead)drawPlayerBubble(p,cx,by-hop,sx,sy);
   ctx.globalAlpha=1;

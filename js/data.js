@@ -18,7 +18,7 @@ const FORMS={
   wiener:{name:'ウインナーパン',desc:'X：ウインナーむち'},
 };
 // てきの データは js/enemies/*.js の defineEnemy() に ある
-const AREA_NAMES={1:'パンの くに',2:'うみの せかい'};
+const AREA_NAMES={1:'パンの くに',2:'うみの せかい',3:'ゴツゴツ いわやま'};
 function stageLabel(i){const a=STAGES[i].area||1;let n=0;for(let j=0;j<=i;j++)if((STAGES[j].area||1)===a)n++;return a+'-'+n;}
 const AIR_MAX=100,AIR_DRAIN=AIR_MAX/(60*40); // まんたんで 40びょう もつ
 // ぶつり：りく と みずのなか（ステージを よみこむと lv.ph に はいる）
@@ -48,6 +48,8 @@ const ABILS=['curry','anko','melon','wiener'];
 // c カレー a あんこ m メロン w ウインナー r ネズミ b スズメ f フォーク  | ボス部屋  X ボス（どのボスかは boss:'koge' のように かく）
 // （みずのなか）o あわのでる かい  O シャボン(あわほきゅう)  Y かいそう  Q サンゴ  > < ^ ながれ
 //   n さかな j クラゲ u ウニ k カニ g フグ l チョウチンアンコウ
+// （いわやま）i ズシンいわ（したを とおると おちてくる）  I ぺったんいわ（じゅんばんに おちたり あがったり）
+// たてに ながい ステージは rows:30 のように たかさを かく（チャンクは したに そろう）
 
 // ステージは stages/*.js で STAGES.push() する（index.html に ならべた じゅんばんが ステージの じゅんばん）
 const STAGES=[];

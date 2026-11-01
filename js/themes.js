@@ -4,18 +4,19 @@
 // ステージに theme:'sea' のように かく。
 // defineTheme('なまえ',{
 //   lock:[かべ,ぼう,ふち]                 … ボスべやが しまるときの とびらの いろ
-//   bg(c,cx)                             … はいけい（cx は カメラの いち。おくの ものほど ゆっくり うごかす）
+//   bg(c,cx,cy)                          … はいけい（cx,cy は カメラの いち。おくの ものほど ゆっくり うごかす）
 //   ground(c,x,y,tx,ty,top,h,h2)         … じめん 1マス（top：うえが あいている  h,h2：マスごとに きまった らんすう）
 // })
 const THEMES={};
 function defineTheme(name,def){THEMES[name]=def;}
-function drawBG(theme,cx){THEMES[theme].bg(ctx,cx);}
+function drawBG(theme,cx,cy){THEMES[theme].bg(ctx,cx,cy);}
 
 // ---------- タイル ----------
 function drawTiles(){
   const th=THEMES[G.theme],c=ctx;
   const c0=Math.max(0,Math.floor(cam.x/TS)-1),c1=Math.min(lv.w-1,Math.floor((cam.x+W)/TS)+1);
-  for(let ty=0;ty<ROWS;ty++)for(let tx=c0;tx<=c1;tx++){
+  const r0=Math.max(0,Math.floor(cam.y/TS)-1),r1=Math.min(lv.rows-1,Math.floor((cam.y+H)/TS)+1);
+  for(let ty=r0;ty<=r1;ty++)for(let tx=c0;tx<=c1;tx++){
     const t=lv.t[ty][tx];if(t==='.')continue;
     const x=tx*TS,y=ty*TS;
     if(t==='#')drawGround(x,y,tx,ty,th);
@@ -78,7 +79,7 @@ function drawGround(x,y,tx,ty,th){
 
 // しんかい：プレイヤーの まわり だけ みえる。ひかる ものは くらやみでも ひかる
 function drawDarkness(ox,oy){
-  const c=ctx,p=player,sx=x=>x-Math.round(cam.x)+ox,sy=y=>y-cam.y+oy;
+  const c=ctx,p=player,sx=x=>x-Math.round(cam.x)+ox,sy=y=>y-Math.round(cam.y)+oy;
   const px=sx(p.x+p.w/2),py=sy(p.y+p.h/2),R=210+Math.sin(G.t*0.05)*6;
   const g=c.createRadialGradient(px,py,40,px,py,R);
   const k=lv.darkK; // ボスせんでは すこし あかるくなる

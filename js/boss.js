@@ -14,6 +14,8 @@
 //   dying(b), dyingTime       … やられている あいだ と その ながさ
 //   move(b)                   … いどうと あたりはんてい
 //   hitbox(b)                 … ないときは からだの しかく
+//   crushing(b,p)             … true の あいだ ぶつかると「つぶされた」あつかい
+//   pose(b,angry)             … [よこ,たて,かたむき] じぶんで よびどうさの ポーズを きめる
 //   draw(b)
 // })
 const BOSSES={};
@@ -25,10 +27,11 @@ function makeBoss(name,tx,ty){
 function bossHB(){const b=boss,h=b.def.hitbox&&b.def.hitbox(b);return h||{x:b.x+8,y:b.y+10,w:b.w-16,h:b.h-10};}
 function bossVulnerable(){return boss&&!['sleep','intro','dying','gone'].includes(boss.state);}
 function setB(s){boss.state=s;boss.t=0;}
-function lockArena(){for(let ty=0;ty<14;ty++)lv.t[ty][lv.arenaCol]='L';lv.locked=true;G.shake=8;sfx('thud');}
+function arenaFloor(){return(lv.arenaRow+1)*TS;} // ボスべやの じめんの たかさ（| の ひとつ した）
+function lockArena(){for(let ty=Math.max(0,lv.arenaRow-13);ty<=lv.arenaRow;ty++)lv.t[ty][lv.arenaCol]='L';lv.locked=true;G.shake=8;sfx('thud');}
 function arenaPlats(){
   const r=[];if(lv.arenaCol==null)return r;
-  for(let ty=0;ty<ROWS;ty++)for(let tx=lv.arenaCol;tx<lv.arenaCol+30;tx++){
+  for(let ty=0;ty<lv.rows;ty++)for(let tx=lv.arenaCol;tx<lv.arenaCol+30;tx++){
     if(tileAt(tx,ty)==='='&&tileAt(tx-1,ty)!=='='){let e=tx;while(tileAt(e+1,ty)==='=')e++;r.push({cx:(tx+e+1)*TS/2,top:ty*TS});}
   }
   return r;
@@ -52,6 +55,7 @@ function bossPose(angry){
   else if(b.state==='charge'){if(t<36){const k=Math.min(1,t/24);tx=1-0.28*k;ty=1+0.12*k;tl=-b.dir*0.2*k;}else{tx=1.12;ty=0.92;tl=b.dir*0.1;}}
   else if(b.state==='shoot'){const ph=t<24?t/24:(angry&&t<44?(t-24)/20:0);tx=ty=1+0.16*ph;}
   else if(b.state==='summon'){const k=(t>=13&&t<25)?(t-13)/12:(t>=33&&t<45)?(t-33)/12:0;tx=1+0.15*k;ty=1-0.2*k;}
+  else if(b.def.pose){const q=b.def.pose(b,angry);if(q)[tx,ty,tl]=q;}
   b.sqx+=(tx-b.sqx)*0.25;b.sqy+=(ty-b.sqy)*0.25;b.lean+=(tl-b.lean)*0.25;
 }
 // つぎの こうげきを えらぶ（へんしんできる ぐざいが ないときは こぶんを だす）
@@ -89,7 +93,7 @@ function bossDefeated(b,D){ // きえて ゴールが でる
   for(let i=0;i<5;i++)ring(cx,cy,D.finishColors[i%3],40+i*20);
   sparkle(cx,cy,24);
   if(D.onFinish)D.onFinish(b);
-  goal={x:lv.arenaX+15*TS,y:14*TS,appear:0};
+  goal={x:lv.arenaX+15*TS,y:arenaFloor(),appear:0};
   sfx('transform');setBanner(D.defeat[0],D.defeat[1],170);playBGM(STAGES[G.stage].bgm);
 }
 function updateBoss(){
@@ -122,7 +126,7 @@ function bossContact(){
       }
     }else if(overlap(phb(),hb)){
       if(isStomp(hb.y+6)){hitBoss(2,20);stompBounce(pcx,hb.y,-11);}
-      else hurtPlayer(bcx);
+      else hurtPlayer(bcx,!!(b.def.crushing&&b.def.crushing(b,p)));
     }
   }
 }

@@ -88,10 +88,26 @@ function drawTitle(){
   if(Math.floor(G.t/30)%2===0)txt('スペース / エンター で スタート！',W/2,518,24,'#fff','#c0501a');
   drawParticles();
 }
+// ---------- デバッグメニュー ----------
+function drawDebugMenu(){
+  const c=ctx;
+  drawBG('field',G.t*1.5);c.fillStyle='rgba(30,15,5,0.55)';c.fillRect(0,0,W,H);
+  txt('デバッグ：ステージを えらぶ',W/2,50,32,'#ffd36a','#6a2a08',undefined,6);
+  const AC={1:'#ffd36a',2:'#9ad8ff',3:'#d8c0a0'};
+  STAGES.forEach((s,i)=>{
+    const r=debugRect(i),on=i===G.dsel,a=s.area||1;
+    rr(c,r.x,r.y,r.w,r.h,12);c.fillStyle=on?'#fff6d8':'rgba(255,248,228,0.85)';c.fill();
+    c.lineWidth=on?4:2;c.strokeStyle=on?'#c0501a':'#d8b890';c.stroke();
+    rr(c,r.x+8,r.y+6,64,r.h-12,8);c.fillStyle=AC[a]||'#ddd';c.fill();
+    txt(stageLabel(i),r.x+40,r.y+r.h/2+1,18,'#5a2a0c',null);
+    txt(s.name+(s.boss?'　★ボス':''),r.x+86,r.y+r.h/2+1,18,on?'#7a2a08':'#8a5a30',null,'left');
+  });
+  txt('↑↓ えらぶ　Z / エンター スタート　T / エスケープ もどる',W/2,H-24,15,'#fff','#5a2a0c');
+}
 function drawEnding(){
   drawBG('field',G.endT*2);
   txt('ぜんぶ おいしく やけました！',W/2,110,46,'#ffd36a','#7a3a10',undefined,9);
-  txt('こげこげ大王を 2かいも やっつけて パンの せかいに へいわが もどった！',W/2,170,20,'#fff','#7a3a10');
+  txt('こげこげ大王を 3かいも やっつけて パンの せかいに へいわが もどった！',W/2,170,20,'#fff','#7a3a10');
   drawBreadRow(360,false);
   rr(ctx,W/2-200,400,400,80,16);ctx.fillStyle='rgba(255,250,235,0.92)';ctx.fill();ctx.lineWidth=3;ctx.strokeStyle='#d0a060';ctx.stroke();
   txt('スコア  '+G.score,W/2,425,26,'#c0501a',null);

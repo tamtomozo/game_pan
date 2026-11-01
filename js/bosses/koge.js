@@ -17,7 +17,7 @@ defineBoss('koge',{
       b.vx*=b.onGround?0.8:1;
       if(b.t===JW){
         // ねらう着地点：プレイヤーが足場の上ならそこ、ときどき足場、ふだんはプレイヤーの足もと
-        const ground=14*TS,plats=arenaPlats();let tx=pcx,ty=ground;
+        const ground=arenaFloor(),plats=arenaPlats();let tx=pcx,ty=ground;
         if(p.onGround&&p.y+p.h<ground-8)ty=p.y+p.h;
         else if(plats.length&&Math.random()<0.45){const pl=plats[Math.floor(Math.random()*plats.length)];tx=pl.cx;ty=pl.top;}
         const v=angry?19:17.5,dy=ty-(b.y+b.h);

@@ -10,6 +10,7 @@
 //   speed, think(e), onWalk(e), afterMove(e), dash:{frames,speed,cool}, noEdgeTurn, stretchInAir
 //   ── じぶんで うごく てき ──
 //   update(e,player)
+//   contact(e,player)        … プレイヤーとの あたりはんていを じぶんで する（ないときは ふむ か いたい）
 //   glow(e)                  … まっくらな ステージで ひかる ところ {x,y,r,col}
 //   draw(c,e,d,t)            … あしもとが (0,0)。d は むき、t は じかん
 // })
@@ -91,13 +92,13 @@ function walkEnemy(e,D){
     else if(!D.noEdgeTurn&&e.thrown<=0&&e.wind<=0&&!groundAhead(e,2)){e.dash=0;windup(e,'turn',10);}
   }
   if(D.afterMove)D.afterMove(e);
-  if(e.y>ROWS*TS+80)e.dead=true;
+  if(e.y>lv.rows*TS+80)e.dead=true;
 }
 function updateEnemies(){
   const p=player;
   for(const e of enemies){
     if(e.dead)continue;
-    if(!e.active){if(e.x<cam.x+W+60&&e.x+e.w>cam.x-60)e.active=true;else continue;}
+    if(!e.active){if(e.x<cam.x+W+60&&e.x+e.w>cam.x-60&&e.y<cam.y+H+60&&e.y+e.h>cam.y-60)e.active=true;else continue;}
     e.t++;if(e.hit>0)e.hit--;if(e.shake>0)e.shake--;
     if(e.suckT>0){e.suckT--;continue;}
     if(e.cool>0)e.cool--;
@@ -106,6 +107,7 @@ function updateEnemies(){
     enemyPose(e);
     if(!p.dead&&G.state==='play'){
       if(p.roll>0){const rc=rollCircle();if(circleRect(rc.x,rc.y,rc.r,e)){damageEnemy(e,99,p.face);G.shake=Math.max(G.shake,3);continue;}}
+      else if(D.contact)D.contact(e,p);
       else if(overlap(phb(),{x:e.x+2-e.pf*7,y:e.y+2-e.pf*7,w:e.w-4+e.pf*14,h:e.h-2+e.pf*14})){ // ふくらんだ フグは おおきい
         if(!isSpiky(e)&&isStomp(e.y-e.pf*7)){damageEnemy(e,3,0,6);stompBounce(e.x+e.w/2,e.y);}
         else hurtPlayer(e.x+e.w/2);
@@ -122,7 +124,7 @@ function eyes(c,x,y,gap,s=1,angry=false){
   if(angry){c.strokeStyle='#2a160a';c.lineWidth=1.6;c.lineCap='round';for(const k of[-1,1]){c.beginPath();c.moveTo(x+k*(gap+3.2*s),y-6*s);c.lineTo(x+k*(gap-2.4*s),y-3.6*s);c.stroke();}}
 }
 function drawEnemy(e){
-  if(e.x>cam.x+W+60||e.x+e.w<cam.x-60)return;
+  if(e.x>cam.x+W+60||e.x+e.w<cam.x-60||e.y>cam.y+H+60||e.y+e.h<cam.y-60)return;
   const c=ctx;c.save();
   let x=e.x+e.w/2,y=e.y+e.h;if(e.shake>0)x+=rand(-2,2);
   c.translate(x,y);

@@ -5,18 +5,19 @@
 // =====================================================================
 const G={state:'title',stage:0,score:0,grains:0,t:0,freeze:0,shake:0,flash:0,banner:null,cp:null,carryForm:'plain',maxHp:5,paused:false,psel:0,click:null,clearT:0,endT:0,theme:'kitchen'};
 let lv,player,enemies=[],items=[],projs=[],parts=[],boss=null,signs=[],checks=[],goal=null;
-const cam={x:0,y:ROWS*TS-H,minX:0,maxX:0};
+const cam={x:0,y:ROWS*TS-H,minX:0,maxX:0,fy:0};
 
 function isSolid(t){return t==='#'||t==='B'||t==='~'||t==='L';}
-function tileAt(tx,ty){if(tx<0||tx>=lv.w)return'#';if(ty<0||ty>=ROWS)return'.';return lv.t[ty][tx];}
+function tileAt(tx,ty){if(tx<0||tx>=lv.w)return'#';if(ty<0||ty>=lv.rows)return'.';return lv.t[ty][tx];}
 function tileAtP(x,y){return tileAt(Math.floor(x/TS),Math.floor(y/TS));}
 
-function buildRows(chunks){
-  const rows=Array(ROWS).fill('');
+// n：ステージの たかさ（ふつうは ROWS。たてに ながい ステージは rows:30 のように かく）
+function buildRows(chunks,n){
+  const rows=Array(n).fill('');
   for(const s of chunks){
     const ch=s.split('\n').map(l=>l.trim()).filter(l=>l.length);
-    const w=Math.max(...ch.map(r=>r.length)),pad=ROWS-ch.length;
-    for(let r=0;r<ROWS;r++)rows[r]+=(r<pad?'':ch[r-pad]).padEnd(w,'.');
+    const w=Math.max(...ch.map(r=>r.length)),pad=n-ch.length;
+    for(let r=0;r<n;r++)rows[r]+=(r<pad?'':ch[r-pad]).padEnd(w,'.');
   }
   return rows;
 }
@@ -24,11 +25,11 @@ function setBanner(text,sub,t,form){G.banner={text,sub,t,max:t,form};}
 
 function loadStage(i,cp){
   const S=STAGES[i];G.stage=i;G.theme=S.theme;
-  const rows=buildRows(S.chunks);
-  lv={w:rows[0].length,t:rows.map(r=>r.split('')),wob:{},arenaX:null,arenaCol:null,locked:false,water:!!S.water,ph:PHYS[S.water?'water':'land'],dark:!!S.dark,darkK:1,vents:[]};
+  const rows=buildRows(S.chunks,S.rows||ROWS);
+  lv={w:rows[0].length,rows:rows.length,t:rows.map(r=>r.split('')),wob:{},arenaX:null,arenaCol:null,arenaRow:null,locked:false,water:!!S.water,ph:PHYS[S.water?'water':'land'],dark:!!S.dark,darkK:1,vents:[]};
   enemies=[];items=[];projs=[];parts=[];signs=[];checks=[];goal=null;boss=null;
   let start=null,si=0;
-  for(let x=0;x<lv.w;x++)for(let y=0;y<ROWS;y++){
+  for(let x=0;x<lv.w;x++)for(let y=0;y<lv.rows;y++){
     const c=lv.t[y][x];let clear=true;
     if(c==='P')start={x,y};
     else if(ECHAR[c]){const D=ENEMY[ECHAR[c]];spawnEnemy(ECHAR[c],x*TS+(TS-D.w)/2,(y+1)*TS-D.h);}
@@ -39,7 +40,7 @@ function loadStage(i,cp){
     else if(c==='S')signs.push({x:x*TS+16,y:(y+1)*TS,text:S.signs[si++]||''});
     else if(c==='K')checks.push({x:x*TS+16,y:(y+1)*TS,on:false});
     else if(c==='G')goal={x:x*TS+16,y:(y+1)*TS};
-    else if(c==='|'){lv.arenaX=x*TS;lv.arenaCol=x;}
+    else if(c==='|'){lv.arenaX=x*TS;lv.arenaCol=x;lv.arenaRow=y;}
     else if(c==='X')boss=makeBoss(S.boss,x,y);
     else clear=false;
     if(clear)lv.t[y][x]=(c==='*'&&x>0&&'<>^'.includes(lv.t[y][x-1]))?lv.t[y][x-1]:'.'; // ながれの なかの こむぎ
@@ -54,6 +55,7 @@ function loadStage(i,cp){
   if(carried)player.needRelease=true; // X を おしたまま はじまっても すぐ こうげき しない
   G.carryForm='plain';
   cam.minX=0;cam.maxX=lv.w*TS-W;cam.x=clamp(player.x-W/2+80,cam.minX,cam.maxX);
+  cam.fy=camFocusY(player);cam.y=camTargetY();
   if(carried)popText(Math.max(player.x+player.w/2,cam.x+110),player.y-30,FORMS[player.form].name+' の まま！','#fff6b0');
   G.state='play';G.freeze=0;G.paused=false;G.flash=0;
   if(cp)setBanner('もういっかい！','',70);
@@ -68,7 +70,7 @@ function spawnEnemy(type,x,y){
   e.baseY=y;e.homeX=x; // ふわふわ うごく てきの きじゅん
   enemies.push(e);return e;
 }
-function startGame(){G.score=0;G.grains=0;G.cp=null;G.carryForm='plain';loadStage(0);}
+function startGame(i=0){G.score=0;G.grains=0;G.cp=null;G.carryForm='plain';loadStage(i);}
 
 // ---------- 物理 ----------
 function moveBody(b){
@@ -98,7 +100,7 @@ function breakAt(x,y,r){
   let hit=false;
   const x0=Math.floor((x-r)/TS),x1=Math.floor((x+r)/TS),y0=Math.floor((y-r)/TS),y1=Math.floor((y+r)/TS);
   for(let ty=y0;ty<=y1;ty++)for(let tx=x0;tx<=x1;tx++){
-    if(ty<0||ty>=ROWS||tx<0||tx>=lv.w)continue;
+    if(ty<0||ty>=lv.rows||tx<0||tx>=lv.w)continue;
     if(lv.t[ty][tx]==='B'){
       lv.t[ty][tx]='.';hit=true;
       burst(tx*TS+16,ty*TS+16,['#f0d29a','#c99a5a','#fff0c8'],10,4);sfx('brk');G.shake=Math.max(G.shake,3);

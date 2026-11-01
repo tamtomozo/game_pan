@@ -19,10 +19,31 @@ function updatePauseMenu(){
   if(choose===1){G.cp=null;loadStage(G.stage);}
   else if(choose===2){G.state='title';playBGM('title');}
 }
+// ---------- デバッグメニュー（タイトルで T キー。がめんには ださない）：すきな ステージから はじめる ----------
+function debugRect(i){const per=9,col=Math.floor(i/per),cols=Math.ceil(STAGES.length/per);return{x:W/2-cols*215+col*430+10,y:96+(i%per)*42,w:410,h:36};}
+function openDebugMenu(){
+  G.state='debug';sfx('pause');
+  if(G.dsel==null){const top=Math.max(...STAGES.map(s=>s.area||1));G.dsel=STAGES.findIndex(s=>(s.area||1)===top);} // さいしょは いちばん あたらしい エリア
+}
+function updateDebugMenu(){
+  const n=STAGES.length;let choose=-1;
+  if(PK.up){G.dsel=(G.dsel+n-1)%n;sfx('sel');}
+  if(PK.down){G.dsel=(G.dsel+1)%n;sfx('sel');}
+  if(PK.ok)choose=G.dsel;
+  if(G.click)for(let i=0;i<n;i++)if(inRect(G.click,debugRect(i)))choose=i;
+  if(P.debug||P.pause){G.state='title';sfx('pause');return;}
+  if(choose>=0){G.dsel=choose;audioInit();startGame(choose);}
+}
 function update(){
   G.t++;
   if(P.mute){muted=!muted;}
-  if(G.state==='title'){if(G.t%2===0)updateParticles();if(P.start||P.jump){audioInit();startGame();}return;}
+  if(G.state==='title'){
+    if(G.t%2===0)updateParticles();
+    if(P.debug){openDebugMenu();return;}
+    if(P.start||P.jump){audioInit();startGame();}
+    return;
+  }
+  if(G.state==='debug'){updateDebugMenu();return;}
   if(G.state==='ending'){G.endT++;updateParticles();
     if(G.endT%30===0)sparkle(rand(100,W-100),rand(80,300),6,['#ffe27a','#ffb0c0','#b0e0ff'][G.endT/30%3|0]);
     if(G.endT>90&&(P.start||P.jump)){G.state='title';playBGM('title');}return;}
@@ -47,18 +68,25 @@ function draw(){
   ctx.setTransform(SK,0,0,SK,0,0);
   ctx.globalAlpha=1;ctx.globalCompositeOperation='source-over';
   if(G.state==='title'){drawTitle();return;}
+  if(G.state==='debug'){drawDebugMenu();return;}
   if(G.state==='ending'){drawEnding();return;}
   const shx=G.shake?rand(-G.shake,G.shake):0,shy=G.shake?rand(-G.shake,G.shake):0;
-  drawBG(G.theme,cam.x);
-  ctx.save();ctx.translate(-Math.round(cam.x)+shx,-cam.y+shy);
+  drawBG(G.theme,cam.x,cam.y);
+  ctx.save();ctx.translate(-Math.round(cam.x)+shx,-Math.round(cam.y)+shy);
   drawTiles();drawVents();drawSigns();drawItems();
+  const under=player.dead&&player.crushed; // つぶされた パンは いわの したに
+  if(under)drawPlayer();
   for(const e of enemies)drawEnemy(e);
-  drawBoss();drawProjs();drawPlayer();drawParticles();
+  drawBoss();drawProjs();if(!under)drawPlayer();drawParticles();
   ctx.restore();
   if(lv.dark)drawDarkness(shx,shy);
   if(G.flash>0){ctx.fillStyle=`rgba(255,250,220,${G.flash*0.6})`;ctx.fillRect(0,0,W,H);}
   drawHUD();drawBanner();
-  if(player.dead){if(lv.water)txt('ふやけちゃった・・・',W/2,H/2,48,'#eaf6ff','#0a3a6a',undefined,8);else txt('こげちゃった…',W/2,H/2,48,'#fff','#3a1a0a',undefined,8);}
+  if(player.dead){
+    if(lv.water)txt('ふやけちゃった・・・',W/2,H/2,48,'#eaf6ff','#0a3a6a',undefined,8);
+    else if(player.crushed)txt('つぶされちゃった・・・',W/2,H/2,48,'#fff','#3a342e',undefined,8);
+    else txt('こげちゃった・・・',W/2,H/2,48,'#fff','#3a1a0a',undefined,8);
+  }
   if(G.state==='clear'){
     const k=Math.min(1,G.clearT/20);
     ctx.save();ctx.translate(W/2,H/2-40);ctx.scale(easeOutBack(k),easeOutBack(k));

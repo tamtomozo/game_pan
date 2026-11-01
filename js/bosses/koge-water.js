@@ -1,7 +1,7 @@
 'use strict';
 // ボス：あわに つつまれた こげこげ大王（2-3 まっくら しんかい）
 // あわの たいきゅうど＝ライフ。あわが われると ふやけて しずむ
-const bossFloatY=b=>7*TS+Math.sin(b.t*0.05)*18; // ふだん ただよう たかさ
+const bossFloatY=b=>arenaFloor()-7*TS+Math.sin(b.t*0.05)*18; // ふだん ただよう たかさ
 function bossSteer(b,tvx,tvy,k){b.vx+=(tvx-b.vx)*k;b.vy+=(tvy-b.vy)*k;}
 defineBoss('kogeWater',{
   hp:30,
@@ -29,7 +29,7 @@ defineBoss('kogeWater',{
       if(b.t<40){
         if(b.t===1){b.dir=pcx<bcx?-1:1;sfx('roar');}
         b.jit=b.t%4<2?2:-2;
-        bossSteer(b,0,(clamp(pcy-b.h/2,2*TS,14*TS-b.h)-b.y)*0.06,0.2);
+        bossSteer(b,0,(clamp(pcy-b.h/2,2*TS,arenaFloor()-b.h)-b.y)*0.06,0.2);
       }else{
         b.jit=0;b.vy*=0.9;b.vx=b.dir*(angry?8:6.5);
         if(b.t%3===0)bubbles(bcx-b.dir*50,bcy,2,1);

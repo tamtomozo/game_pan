@@ -52,7 +52,7 @@ const CRUMB_PTS=seeded(36,11);
 const K={},P={},PK={};
 const MENUK={ArrowUp:'up',KeyW:'up',ArrowDown:'down',KeyS:'down',Enter:'ok',KeyZ:'ok',Space:'ok',KeyX:'ok'};
 const KEYMAP={ArrowLeft:'left',KeyA:'left',ArrowRight:'right',KeyD:'right',ArrowUp:'jump',KeyW:'jump',Space:'jump',KeyZ:'jump',
-  KeyX:'act',KeyJ:'act',ArrowDown:'down',KeyS:'down',KeyC:'spit',KeyK:'spit',Enter:'start',KeyP:'pause',Escape:'pause',KeyM:'mute'};
+  KeyX:'act',KeyJ:'act',ArrowDown:'down',KeyS:'down',KeyC:'spit',KeyK:'spit',Enter:'start',KeyP:'pause',Escape:'pause',KeyM:'mute',KeyT:'debug'};
 function press(a){if(!K[a])P[a]=true;K[a]=true;}
 function release(a){K[a]=false;}
 addEventListener('keydown',e=>{const a=KEYMAP[e.code];if(!a)return;e.preventDefault();audioInit();if(!e.repeat){press(a);if(MENUK[e.code])PK[MENUK[e.code]]=true;}});

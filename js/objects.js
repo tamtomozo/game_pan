@@ -39,6 +39,10 @@ function updateProjs(){
       q.x+=q.vx;q.y+=q.vy+Math.sin(q.t*0.15)*0.3;q.life--;
       if(q.t%6===0)addP({type:'smoke',x:q.x,y:q.y,vy:-0.5,life:16,size:3,color:'rgba(90,60,50,0.35)'});
       if(q.life<=0||isSolid(tileAtP(q.x,q.y))){q.dead=true;bubbles(q.x,q.y,5);}
+    }else if(q.type==='rock'){ // おちてくる いわ（さきに かげで しらせる）
+      if(q.warn>0){q.warn--;continue;}
+      q.vy=Math.min(q.vy+0.45,11);q.y+=q.vy;q.rot+=0.08;
+      if(q.y+q.r>=q.gy||q.y>lv.rows*TS){q.dead=true;rockBreak(q.x,q.gy);}
     }else if(q.type==='wave'){ // すなの しょうげきは
       q.x+=q.vx;q.life--;q.r=15+Math.sin(q.t*0.4)*2;
       if(q.t%3===0)bubbles(q.x,q.y+6,1,1.2);
@@ -58,9 +62,19 @@ function updateProjs(){
         hitBoss(dmg,q.type==='fire'?7:16);
         if(q.type==='star'){q.dead=true;sparkle(q.x,q.y,10);ring(q.x,q.y,'#fff',26);}
       }
-    }else if(!p.dead&&circleRect(q.x,q.y,q.r*0.8,phb())){hurtPlayer(q.x);q.dead=true;}
+    }else if(!p.dead&&circleRect(q.x,q.y,q.r*0.8,phb())){hurtPlayer(q.x,q.crush);q.dead=true;if(q.type==='rock')rockBreak(q.x,q.y+q.r);}
   }
   projs=projs.filter(q=>!q.dead);
+}
+// そらから いわを おとす。x の したの じめん（あしばも）に かげが でる
+function dropRock(x,delay){
+  const tx=Math.floor(x/TS);let ty=Math.max(0,Math.floor(cam.y/TS));
+  while(ty<lv.rows&&!isSolid(tileAt(tx,ty))&&tileAt(tx,ty)!=='=')ty++;
+  projs.push({type:'rock',x,y:cam.y-40,vx:0,vy:0,r:17,warn:delay,warnMax:delay,gy:ty*TS,rot:rand(0,6),crush:true,friendly:false,t:0});
+}
+function rockBreak(x,y){
+  burst(x,y-8,ROCK_COLS,10,4);dust(x,y,5);sfx('crumble');
+  if(Math.abs(x-(cam.x+W/2))<W)G.shake=Math.max(G.shake,4);
 }
 function updateItems(){
   const p=player,hb=phb();
@@ -78,7 +92,7 @@ function updateItems(){
       it.vy=Math.min(it.vy+0.35,8);const vx0=it.vx;moveBody(it);
       if(it.hitWall)it.vx=-vx0*0.8;
       if(it.onGround){if(it.bounce<-1.2){it.vy=it.bounce;it.bounce*=0.6;}it.vx*=0.92;}
-      if(--it.life<=0||it.y>ROWS*TS+40){it.dead=true;dust(it.x+11,it.y+11,6);continue;}
+      if(--it.life<=0||it.y>lv.rows*TS+40){it.dead=true;dust(it.x+11,it.y+11,6);continue;}
     }
     if(!p.dead&&overlap(it,hb)){
       if(it.type==='ability'){if(p.form==='plain'&&it.delay<=0){it.dead=true;transform(it.ab);}}
@@ -146,6 +160,16 @@ function updateCamera(){
   if(lv.locked){cam.minX=cam.maxX=lv.arenaX;}
   const tx=clamp(p.x+p.w/2-W/2+p.face*60,cam.minX,cam.maxX);
   cam.x+=(tx-cam.x)*0.1;
+  // たてに ながい ステージ：じめんに いるときか、がめんの はしに ちかづいたときだけ うえしたに ついていく
+  if(p.onGround||p.y<cam.y+100||p.y+p.h>cam.y+H-120)cam.fy=camFocusY(p);
+  cam.y+=(camTargetY()-cam.y)*0.1;
+}
+function camFocusY(p){return p.y+p.h/2-H*0.64;} // のぼる ステージなので うえを ひろく みせる
+function camTargetY(){
+  const maxY=lv.rows*TS-H;
+  if(lv.rows<=ROWS)return maxY;
+  if(lv.locked)return clamp((lv.arenaRow+4)*TS-H,0,maxY); // ボスべやは がめんを とめる
+  return clamp(cam.fy,0,maxY);
 }
 
 // ---------- アイテム・オブジェ ----------
@@ -285,12 +309,26 @@ function drawProjs(){
       const g=c.createRadialGradient(q.x-4,q.y-4,1,q.x,q.y,q.r);g.addColorStop(0,'rgba(255,170,90,0.65)');g.addColorStop(0.6,'rgba(90,50,40,0.5)');g.addColorStop(1,'rgba(40,20,15,0.85)');
       ell(c,q.x,q.y,q.r,q.r,g,'rgba(255,140,60,0.85)',2);
       ell(c,q.x-q.r*0.4,q.y-q.r*0.4,q.r*0.25,q.r*0.15,'rgba(255,255,255,0.7)',null,0,-0.7);
+    }else if(q.type==='rock'){
+      // かげ：おちてくる まえは ちかちか、ちかづくほど こくなる
+      const k=q.warn>0?1-q.warn/q.warnMax:1,near=clamp(1-(q.gy-q.y)/420,0,1);
+      if(q.warn<=0||Math.floor(q.warn/5)%2===0){c.fillStyle='rgba(40,20,10,'+(0.18+0.3*Math.max(k*0.5,near))+')';c.beginPath();c.ellipse(q.x,q.gy-2,10+12*Math.max(k*0.6,near),4,0,0,7);c.fill();}
+      if(q.warn<=0){c.save();c.translate(q.x,q.y);c.rotate(q.rot);drawRockLump(c,q.r);c.restore();}
     }else if(q.type==='wave'){
       ell(c,q.x,q.y,q.r*1.25,q.r,'rgba(240,220,170,0.8)','rgba(255,255,255,0.85)',2);
       for(let i=0;i<3;i++){const a=q.t*0.3+i*2.1;ell(c,q.x+Math.cos(a)*q.r*0.9,q.y-6+Math.sin(a)*q.r*0.6,3.5,3.5,null,'rgba(255,255,255,0.8)',1.5);}
       ell(c,q.x-q.r*0.4,q.y-q.r*0.4,q.r*0.3,q.r*0.15,'rgba(255,255,255,0.7)');
     }
   }
+}
+// ちいさな いわの かたまり（ボスの いわおとし）
+function drawRockLump(c,r){
+  c.beginPath();
+  for(let i=0;i<8;i++){const a=i/8*Math.PI*2,rr=r*(0.82+0.18*((i*37)%5)/4);i?c.lineTo(Math.cos(a)*rr,Math.sin(a)*rr):c.moveTo(Math.cos(a)*rr,Math.sin(a)*rr);}
+  c.closePath();
+  const g=c.createRadialGradient(-r*0.3,-r*0.4,2,0,0,r);g.addColorStop(0,'#c8bcae');g.addColorStop(1,'#6a6058');
+  c.fillStyle=g;c.fill();c.lineWidth=2;c.strokeStyle='#3a342e';c.stroke();
+  c.strokeStyle='rgba(58,52,46,0.6)';c.lineWidth=1.5;c.beginPath();c.moveTo(-r*0.3,-r*0.1);c.lineTo(r*0.1,r*0.2);c.lineTo(r*0.4,r*0.05);c.stroke();
 }
 function drawParticles(){
   const c=ctx;
