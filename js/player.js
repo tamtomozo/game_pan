@@ -31,7 +31,7 @@ function updatePlayer(){
       p.vx=0;p.vy=Math.min(p.vy+0.5,8);moveBody(p);
       if(p.deathT%12===0)addP({type:'star',x:p.x+p.w/2+Math.cos(p.deathT*0.3)*16,y:p.y+p.h-12,vy:-0.4,life:20,size:5,color:'#fff6b0'});
     }else{p.vy=Math.min(p.vy+0.35,8);p.y+=p.vy;p.rot+=0.12;}
-    if(p.deathT<=0)loadStage(G.stage,G.cp);return;}
+    if(p.deathT<=0){G.grains=G.stageGrains;loadStage(G.stage,G.cp);}return;} // こむぎは ステージに はいった ときの かずに もどす
   if(p.inv>0)p.inv--;if(p.dropT>0)p.dropT--;if(p.rollCd>0)p.rollCd--;if(p.springT>0)p.springT--;if(p.hurtT>0)p.hurtT--;
   if(--p.blinkT<-6)p.blinkT=(rand(120,280))|0;
   if(!K.act||P.act)p.needRelease=false;

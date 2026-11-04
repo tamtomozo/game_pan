@@ -16,7 +16,7 @@ function updatePauseMenu(){
   if(G.click)for(let i=0;i<n;i++)if(inRect(G.click,menuRect(i)))choose=i;
   if(choose<0)return;
   G.paused=false;sfx('pause');
-  if(choose===1){G.cp=null;loadStage(G.stage);}
+  if(choose===1)restartStage();
   else if(choose===2){G.state='title';playBGM('title');}
 }
 // ---------- デバッグメニュー（タイトルで T キー。がめんには ださない）：すきな ステージから はじめる ----------

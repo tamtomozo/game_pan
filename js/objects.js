@@ -141,7 +141,7 @@ function updateClear(){
     if(G.stage<STAGES.length-1){
       const nx=G.stage+1;
       G.carryForm=(STAGES[nx].area||1)===(STAGES[G.stage].area||1)?p.form:'plain'; // おなじ エリアなら パンの かたちを もちこす
-      G.cp=null;loadStage(nx);
+      enterStage(nx);
     }
     else{G.state='ending';G.endT=0;playBGM('title');}
   }

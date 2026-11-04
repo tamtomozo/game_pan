@@ -3,7 +3,7 @@
 // =====================================================================
 //  ゲーム状態
 // =====================================================================
-const G={state:'title',stage:0,score:0,grains:0,t:0,freeze:0,shake:0,flash:0,banner:null,cp:null,carryForm:'plain',maxHp:5,paused:false,psel:0,click:null,clearT:0,endT:0,theme:'kitchen'};
+const G={state:'title',stage:0,score:0,grains:0,t:0,freeze:0,shake:0,flash:0,banner:null,cp:null,stageGrains:0,carryForm:'plain',maxHp:5,paused:false,psel:0,click:null,clearT:0,endT:0,theme:'kitchen'};
 let lv,player,enemies=[],items=[],projs=[],parts=[],boss=null,signs=[],checks=[],goal=null;
 const cam={x:0,y:ROWS*TS-H,minX:0,maxX:0,fy:0};
 
@@ -70,7 +70,11 @@ function spawnEnemy(type,x,y){
   e.baseY=y;e.homeX=x; // ふわふわ うごく てきの きじゅん
   enemies.push(e);return e;
 }
-function startGame(i=0){G.score=0;G.grains=0;G.cp=null;G.carryForm='plain';loadStage(i);}
+// あたらしい ステージに はいる（はいった ときの こむぎの かずを おぼえておく）
+function enterStage(i){G.cp=null;G.stageGrains=G.grains;loadStage(i);}
+// ステージの さいしょから やりなおす（こむぎは はいった ときの かずに もどす）
+function restartStage(){G.cp=null;G.grains=G.stageGrains;loadStage(G.stage);}
+function startGame(i=0){G.score=0;G.grains=0;G.carryForm='plain';enterStage(i);}
 
 // ---------- 物理 ----------
 function moveBody(b){
