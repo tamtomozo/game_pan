@@ -4,7 +4,8 @@
 // ステージに boss:'なまえ' と かいて、マップの X の ばしょに でてくる（| から さきが ボスべや）。
 // defineBoss('なまえ',{
 //   hp, wake:[でてきたときの バナー,サブ], defeat:[たおしたときの バナー,サブ],
-//   hudName, hudColors:[なまえの いろ, バーの いろ1, バーの いろ2], hitColors:[あたったときの いろ],
+//   hudName,   … もじは {ja:'...',en:'...'} で かく
+//   hudColors:[なまえの いろ, バーの いろ1, バーの いろ2], hitColors:[あたったときの いろ],
 //   finishColors:[きえるときの わの いろ], attacks:['charge',...]（idle の あとに えらぶ）,
 //   summonVy                  … こぶんを なげる いきおい
 //   pre(b)                    … まいフレーム さいしょに
@@ -94,14 +95,14 @@ function bossDefeated(b,D){ // きえて ゴールが でる
   sparkle(cx,cy,24);
   if(D.onFinish)D.onFinish(b);
   goal={x:lv.arenaX+15*TS,y:arenaFloor(),appear:0};
-  sfx('transform');setBanner(D.defeat[0],D.defeat[1],170);playBGM(STAGES[G.stage].bgm);
+  sfx('transform');setBanner(L(D.defeat[0]),L(D.defeat[1]),170);playBGM(STAGES[G.stage].bgm);
 }
 function updateBoss(){
   const b=boss;if(!b||b.state==='gone')return;const p=player,D=b.def;
   b.t++;
   if(D.pre)D.pre(b);
   if(b.state==='sleep'){
-    if(lv.arenaX!=null&&p.x>lv.arenaX+64&&!p.dead){lockArena();setB('intro');playBGM('boss');setBanner(D.wake[0],D.wake[1],150);}
+    if(lv.arenaX!=null&&p.x>lv.arenaX+64&&!p.dead){lockArena();setB('intro');playBGM('boss');setBanner(L(D.wake[0]),L(D.wake[1]),150);}
     return;
   }
   if(b.hit>0)b.hit--;

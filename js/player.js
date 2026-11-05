@@ -169,7 +169,7 @@ function swallow(e){
 function transform(ab){
   const p=player;p.form=ab;p.needRelease=true;G.freeze=28;G.flash=1;p.s=1.45;p.sv=0;p.roll=0;p.whip=0;
   const cx=p.x+p.w/2,cy=p.y+p.h/2;ring(cx,cy,'#fff',52);ring(cx,cy,'#ffd36a',36);sparkle(cx,cy,12);
-  sfx('transform');setBanner(FORMS[ab].name+' に へんしん！',FORMS[ab].desc,120,ab);
+  sfx('transform');setBanner(T('transform',{name:L(FORMS[ab].name)}),L(FORMS[ab].desc),120,ab);
 }
 function spit(){
   const p=player;
@@ -181,17 +181,17 @@ function collect(it){
   const p=player;it.dead=true;const cx=it.x+it.w/2,cy=it.y+it.h/2;
   if(it.type==='grain'){
     G.grains++;G.score+=10;sfx('coin');sparkle(cx,cy,4,'#ffe27a');
-    if(G.grains%50===0&&p.hp<G.maxHp){p.hp++;sfx('heal');popText(cx,cy-16,'こむぎ50こ！ +1','#ffb0c0');}
+    if(G.grains%50===0&&p.hp<G.maxHp){p.hp++;sfx('heal');popText(cx,cy-16,T('grain50'),'#ffb0c0');}
   }else if(it.type==='air'){
-    p.air=Math.min(AIR_MAX,p.air+35);sfx('air');ring(cx,cy,'rgba(220,245,255,0.95)',22);bubbles(cx,cy,5);popText(cx,cy-12,'あわ ほきゅう！','#c8f0ff');
+    p.air=Math.min(AIR_MAX,p.air+35);sfx('air');ring(cx,cy,'rgba(220,245,255,0.95)',22);bubbles(cx,cy,5);popText(cx,cy-12,T('airRefill'),'#c8f0ff');
   }else if(it.type==='heart'){
-    p.hp=Math.min(G.maxHp,p.hp+2);sfx('heal');sparkle(cx,cy,10,'#ffb0c0');popText(cx,cy-10,'げんき +2','#ffb0c0');
+    p.hp=Math.min(G.maxHp,p.hp+2);sfx('heal');sparkle(cx,cy,10,'#ffb0c0');popText(cx,cy-10,T('heal'),'#ffb0c0');
   }
 }
 function popBubble(){
   const p=player,cx=p.x+p.w/2,cy=p.y+p.h/2;
   p.air=AIR_MAX*0.6;sfx('bubpop');ring(cx,cy,'rgba(220,245,255,0.95)',44);bubbles(cx,cy,14,1.6);
-  popText(cx,cy-44,'あわが われちゃった！','#c8f0ff');
+  popText(cx,cy-44,T('bubblePop'),'#c8f0ff');
   p.inv=0;p.roll=0;hurtPlayer(cx-p.face);
 }
 // crush：うえから おしつぶされた（いわ・ボスの ドスーン）
@@ -200,7 +200,7 @@ function hurtPlayer(srcX,crush){
   p.hp--;p.inv=100;p.hurtT=16;
   const kx=(p.x+p.w/2<srcX)?-1:1;p.vx=kx*4.5;p.vy=lv.ph.hurtVy;p.s=0.6;p.sv=0;p.whip=0;
   G.shake=8;sfx('hurt');burst(p.x+p.w/2,p.y+p.h/2,['#fff','#ffd36a'],8,4);
-  if(crush){p.s=0.45;p.vy=0;sfx('squash');if(p.hp>0)popText(p.x+p.w/2,p.y-14,'ぺしゃんこ！','#fff');}
+  if(crush){p.s=0.45;p.vy=0;sfx('squash');if(p.hp>0)popText(p.x+p.w/2,p.y-14,T('squash'),'#fff');}
   if(p.form!=='plain'){
     items.push({type:'ability',ab:p.form,x:p.x+1,y:p.y-6,w:22,h:22,vx:-kx*2.5,vy:-8,bounce:-5,life:480,delay:45,t:0});
     p.form='plain';

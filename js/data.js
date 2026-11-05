@@ -11,14 +11,15 @@ const BREAD={
   wiener:{rx:19,h:25,top:'#c27a32',mid:'#e5a75e',bot:'#f8dca6',line:'#7a431a'},
 };
 const FORMS={
-  plain:{name:'まるパン',desc:'X ながおし：すいこみ'},
-  curry:{name:'カレーパン',desc:'X ながおし：ファイヤーブレス'},
-  anko:{name:'アンパン',desc:'X：おおきくなって ごろごろアタック'},
-  melon:{name:'メロンパン',desc:'X：クッキーブーメラン'},
-  wiener:{name:'ウインナーパン',desc:'X：ウインナーむち'},
+  plain:{name:{ja:'まるパン',en:'Round Bun'},desc:{ja:'X ながおし：すいこみ',en:'Hold X: inhale'}},
+  curry:{name:{ja:'カレーパン',en:'Curry Bun'},desc:{ja:'X ながおし：ファイヤーブレス',en:'Hold X: fire breath'}},
+  anko:{name:{ja:'アンパン',en:'Bean Bun'},desc:{ja:'X：おおきくなって ごろごろアタック',en:'X: grow big and roll'}},
+  melon:{name:{ja:'メロンパン',en:'Melon Bun'},desc:{ja:'X：クッキーブーメラン',en:'X: cookie boomerang'}},
+  wiener:{name:{ja:'ウインナーパン',en:'Sausage Bun'},desc:{ja:'X：ウインナーむち',en:'X: sausage whip'}},
 };
+// name・desc は L() で いまの ことばを とりだす
 // てきの データは js/enemies/*.js の defineEnemy() に ある
-const AREA_NAMES={1:'パンの くに',2:'うみの せかい',3:'ゴツゴツ いわやま'};
+const AREA_NAMES={1:{ja:'パンの くに',en:'Bread Land'},2:{ja:'うみの せかい',en:'Ocean World'},3:{ja:'ゴツゴツ いわやま',en:'Rocky Mountain'}};
 function stageLabel(i){const a=STAGES[i].area||1;let n=0;for(let j=0;j<=i;j++)if((STAGES[j].area||1)===a)n++;return a+'-'+n;}
 const AIR_MAX=100,AIR_DRAIN=AIR_MAX/(60*40); // まんたんで 40びょう もつ
 // ぶつり：りく と みずのなか（ステージを よみこむと lv.ph に はいる）
@@ -52,4 +53,5 @@ const ABILS=['curry','anko','melon','wiener'];
 // たてに ながい ステージは rows:30 のように たかさを かく（チャンクは したに そろう）
 
 // ステージは stages/*.js で STAGES.push() する（index.html に ならべた じゅんばんが ステージの じゅんばん）
+// name と signs の もじは {ja:'にほんご',en:'えいご'} で かく（js/lang.js の L() で きりかわる）
 const STAGES=[];

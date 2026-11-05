@@ -1,9 +1,10 @@
 'use strict';
 // ステージ 3-2 くもの うえの がけ（マップの きごうは js/data.js の せつめいを みてね）
-STAGES.push({name:'くもの うえの がけ',theme:'cliff',bgm:'cliff',area:3,rows:40,
- signs:['がけを のぼって いこう！ = の あしばは したから とびのれるよ',
-   'うえの ズシンいわに ちゅうい！ おちてきたら のって いっしょに のぼろう',
-   'フォークも いるよ。へんしんして たおそう！'],
+STAGES.push({name:{ja:'くもの うえの がけ',en:'Cliffs Above the Clouds'},theme:'cliff',bgm:'cliff',area:3,rows:40,
+ signs:[
+   {ja:'がけを のぼって いこう！ = の あしばは したから とびのれるよ',en:'Climb the cliffs! Jump up through = ledges from below'},
+   {ja:'うえの ズシンいわに ちゅうい！ おちてきたら のって いっしょに のぼろう',en:'Watch out for Thud Rocks above! Ride them back up after they fall'},
+   {ja:'フォークも いるよ。へんしんして たおそう！',en:'Forks are here too. Transform to beat them!'}],
  chunks:[`
 .................................i......
 ........................................

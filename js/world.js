@@ -56,11 +56,11 @@ function loadStage(i,cp){
   G.carryForm='plain';
   cam.minX=0;cam.maxX=lv.w*TS-W;cam.x=clamp(player.x-W/2+80,cam.minX,cam.maxX);
   cam.fy=camFocusY(player);cam.y=camTargetY();
-  if(carried)popText(Math.max(player.x+player.w/2,cam.x+110),player.y-30,FORMS[player.form].name+' の まま！','#fff6b0');
+  if(carried)popText(Math.max(player.x+player.w/2,cam.x+110),player.y-30,T('stillForm',{name:L(FORMS[player.form].name)}),'#fff6b0');
   G.state='play';G.freeze=0;G.paused=false;G.flash=0;
-  if(cp)setBanner('もういっかい！','',70);
-  else if(i>0&&(STAGES[i-1].area||1)!==(S.area||1))setBanner('エリア'+(S.area||1)+'　'+AREA_NAMES[S.area||1],'ステージ '+stageLabel(i)+'　'+S.name,200);
-  else setBanner('ステージ '+stageLabel(i),S.name,160);
+  if(cp)setBanner(T('tryAgain'),'',70);
+  else if(i>0&&(STAGES[i-1].area||1)!==(S.area||1))setBanner(T('areaNo',{n:S.area||1,name:L(AREA_NAMES[S.area||1])}),T('stageNoName',{n:stageLabel(i),name:L(S.name)}),200);
+  else setBanner(T('stageNo',{n:stageLabel(i)}),L(S.name),160);
   playBGM(S.bgm);
 }
 function spawnEnemy(type,x,y){

@@ -1,7 +1,9 @@
 'use strict';
 // ステージ 1-2 こむぎばたけ（マップの きごうは js/data.js の せつめいを みてね）
-STAGES.push({name:'こむぎばたけ',theme:'field',bgm:'s2',
- signs:['いろんな ぐざいを たべて ためしてみよう！','フォークは すいこめない！ へんしんして たおそう'],
+STAGES.push({name:{ja:'こむぎばたけ',en:'Wheat Fields'},theme:'field',bgm:'s2',
+ signs:[
+   {ja:'いろんな ぐざいを たべて ためしてみよう！',en:'Eat different fillings and try them out!'},
+   {ja:'フォークは すいこめない！ へんしんして たおそう',en:'You can\'t inhale forks! Transform to beat them'}],
  chunks:[`
 ..............................
 ..............................

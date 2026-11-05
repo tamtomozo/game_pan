@@ -1,9 +1,12 @@
 'use strict';
 // ステージ 1-1 パン工房の朝（マップの きごうは js/data.js の せつめいを みてね）
-STAGES.push({name:'パン工房の朝',theme:'kitchen',bgm:'s1',
- signs:['←→ で いどう　Z・スペース で ジャンプ','くうちゅうで もういちど Z で ふくらみジャンプ！ てきは ふんでも たおせるよ',
-   'X ながおしで すいこみ！ ぐざいを たべると へんしん！','X で こうげき！　↓ か C で ぐざいを はきだして もとにもどる',
-   'ジャンプ ながおしで ふんわり。おちても パンきじで ボヨーン！'],
+STAGES.push({name:{ja:'パン工房の朝',en:'Bakery Morning'},theme:'kitchen',bgm:'s1',
+ signs:[
+   {ja:'←→ で いどう　Z・スペース で ジャンプ',en:'←→ to move   Z or Space to jump'},
+   {ja:'くうちゅうで もういちど Z で ふくらみジャンプ！ てきは ふんでも たおせるよ',en:'Press Z again in the air to puff up and jump! You can stomp on enemies too'},
+   {ja:'X ながおしで すいこみ！ ぐざいを たべると へんしん！',en:'Hold X to inhale! Eat a filling to transform!'},
+   {ja:'X で こうげき！　↓ か C で ぐざいを はきだして もとにもどる',en:'X to attack!   ↓ or C to spit out the filling and turn back'},
+   {ja:'ジャンプ ながおしで ふんわり。おちても パンきじで ボヨーン！',en:'Hold jump to float. Dough pads bounce you back up!'}],
  chunks:[`
 ............................
 ............................

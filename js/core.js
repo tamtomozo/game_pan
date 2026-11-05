@@ -25,8 +25,10 @@ function overlap(a,b){return a.x<b.x+b.w&&a.x+a.w>b.x&&a.y<b.y+b.h&&a.y+a.h>b.y;
 function circleRect(cx,cy,r,b){const nx=clamp(cx,b.x,b.x+b.w),ny=clamp(cy,b.y,b.y+b.h);const dx=cx-nx,dy=cy-ny;return dx*dx+dy*dy<r*r;}
 function rr(c,x,y,w,h,r){r=Math.min(r,w/2,h/2);c.beginPath();c.moveTo(x+r,y);c.arcTo(x+w,y,x+w,y+h,r);c.arcTo(x+w,y+h,x,y+h,r);c.arcTo(x,y+h,x,y,r);c.arcTo(x,y,x+w,y,r);c.closePath();}
 function ell(c,x,y,rx,ry,fill,stroke,lw,rot){c.beginPath();c.ellipse(x,y,Math.abs(rx),Math.abs(ry),rot||0,0,Math.PI*2);if(fill){c.fillStyle=fill;c.fill();}if(stroke){c.lineWidth=lw||2;c.strokeStyle=stroke;c.stroke();}}
-function txt(s,x,y,size,fill='#fff',stroke='#5a2a0c',align='center',lw){
-  ctx.font=`bold ${size}px ${FONT}`;ctx.textAlign=align;ctx.textBaseline='middle';ctx.lineJoin='round';
+// maxW：この はばより ながいときは もじを ちいさくする
+function txt(s,x,y,size,fill='#fff',stroke='#5a2a0c',align='center',lw,maxW){
+  ctx.font=`bold ${size}px ${FONT}`;
+  if(maxW){const w=ctx.measureText(s).width;if(w>maxW){const k=maxW/w;size*=k;if(lw)lw*=k;ctx.font=`bold ${size}px ${FONT}`;}}ctx.textAlign=align;ctx.textBaseline='middle';ctx.lineJoin='round';
   if(stroke){ctx.lineWidth=lw||Math.max(3,size/5);ctx.strokeStyle=stroke;ctx.strokeText(s,x,y);}
   ctx.fillStyle=fill;ctx.fillText(s,x,y);
 }
@@ -52,7 +54,7 @@ const CRUMB_PTS=seeded(36,11);
 const K={},P={},PK={};
 const MENUK={ArrowUp:'up',KeyW:'up',ArrowDown:'down',KeyS:'down',Enter:'ok',KeyZ:'ok',Space:'ok',KeyX:'ok'};
 const KEYMAP={ArrowLeft:'left',KeyA:'left',ArrowRight:'right',KeyD:'right',ArrowUp:'jump',KeyW:'jump',Space:'jump',KeyZ:'jump',
-  KeyX:'act',KeyJ:'act',ArrowDown:'down',KeyS:'down',KeyC:'spit',KeyK:'spit',Enter:'start',KeyP:'pause',Escape:'pause',KeyM:'mute',KeyT:'debug'};
+  KeyX:'act',KeyJ:'act',ArrowDown:'down',KeyS:'down',KeyC:'spit',KeyK:'spit',Enter:'start',KeyP:'pause',Escape:'pause',KeyM:'mute',KeyT:'debug',KeyL:'lang'};
 function press(a){if(!K[a])P[a]=true;K[a]=true;}
 function release(a){K[a]=false;}
 addEventListener('keydown',e=>{const a=KEYMAP[e.code];if(!a)return;e.preventDefault();audioInit();if(!e.repeat){press(a);if(MENUK[e.code])PK[MENUK[e.code]]=true;}});

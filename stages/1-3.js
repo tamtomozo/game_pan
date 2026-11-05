@@ -1,7 +1,8 @@
 'use strict';
 // ステージ 1-3 こげこげオーブン城（マップの きごうは js/data.js の せつめいを みてね）
-STAGES.push({name:'こげこげオーブン城',theme:'oven',bgm:'s3',boss:'koge',
- signs:['このさきに こげこげ大王！ すきな パンに へんしんしていこう'],
+STAGES.push({name:{ja:'こげこげオーブン城',en:'Burnt Oven Castle'},theme:'oven',bgm:'s3',boss:'koge',
+ signs:[
+   {ja:'このさきに こげこげ大王！ すきな パンに へんしんしていこう',en:'The Burnt King is ahead! Pick your favorite bread power'}],
  chunks:[`
 ..............................
 ..............................

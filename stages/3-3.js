@@ -1,8 +1,9 @@
 'use strict';
 // ステージ 3-3 いただきの こげこげ大王（マップの きごうは js/data.js の せつめいを みてね）
-STAGES.push({name:'いただきの こげこげ大王',theme:'summit',bgm:'peak',area:3,rows:34,boss:'kogeRock',
- signs:['いただきまで のぼろう！ こげこげ大王が まっているよ',
-   'このさき こげこげ大王！ かげが でたら そこに おちてくるぞ！'],
+STAGES.push({name:{ja:'いただきの こげこげ大王',en:'Burnt King of the Peak'},theme:'summit',bgm:'peak',area:3,rows:34,boss:'kogeRock',
+ signs:[
+   {ja:'いただきまで のぼろう！ こげこげ大王が まっているよ',en:'Climb to the peak! The Burnt King is waiting'},
+   {ja:'このさき こげこげ大王！ かげが でたら そこに おちてくるぞ！',en:'The Burnt King is ahead! He lands where his shadow is!'}],
  chunks:[`
 .........*.*.*................
 ..............................

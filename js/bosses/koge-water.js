@@ -5,9 +5,9 @@ const bossFloatY=b=>arenaFloor()-7*TS+Math.sin(b.t*0.05)*18; // ふだん ただ
 function bossSteer(b,tvx,tvy,k){b.vx+=(tvx-b.vx)*k;b.vy+=(tvy-b.vy)*k;}
 defineBoss('kogeWater',{
   hp:30,
-  wake:['あわに つつまれた こげこげ大王！','あわを こわせば かちだ！'],
-  defeat:['こげこげ大王が ふやけちゃった！','ゴールの かごへ いこう！'],
-  hudName:'こげこげ大王の あわ',hudColors:['#bff0ff','#3aa8f4','#bff0ff'],
+  wake:[{ja:'あわに つつまれた こげこげ大王！',en:'The Burnt King in a bubble!'},{ja:'あわを こわせば かちだ！',en:'Pop the bubble to win!'}],
+  defeat:[{ja:'こげこげ大王が ふやけちゃった！',en:'The Burnt King got soggy!'},{ja:'ゴールの かごへ いこう！',en:'Go to the goal basket!'}],
+  hudName:{ja:'こげこげ大王の あわ',en:'Burnt King\'s Bubble'},hudColors:['#bff0ff','#3aa8f4','#bff0ff'],
   hitColors:['#dff6ff','#a8e0ff','#fff'],finishColors:['#fff','#c8f0ff','#ffd36a'],
   attacks:['charge','shoot','slam','charge'],
   summonVy:-5,
@@ -67,7 +67,7 @@ defineBoss('kogeWater',{
   dying(b){ // あわが われて ふやけていく
     const bcx=b.x+b.w/2,bcy=b.y+b.h/2;
     b.jit=0;b.vx*=0.9;b.vy+=(0.7-b.vy)*0.05;b.mouth=1;b.soggy=Math.min(1,b.t/70);
-    if(b.t===1){b.popped=true;sfx('bubpop');G.shake=16;for(let i=0;i<3;i++)ring(bcx,bcy,['#fff','#c8f0ff','#8ad0ff'][i],60+i*25);bubbles(bcx,bcy,40,3);popText(bcx,b.y-30,'パチーン！','#c8f0ff');}
+    if(b.t===1){b.popped=true;sfx('bubpop');G.shake=16;for(let i=0;i<3;i++)ring(bcx,bcy,['#fff','#c8f0ff','#8ad0ff'][i],60+i*25);bubbles(bcx,bcy,40,3);popText(bcx,b.y-30,T('bubbleBurst'),'#c8f0ff');}
     if(b.t===24)sfx('soggy');
     if(b.t%6===0)bubbles(bcx+rand(-40,40),b.y+rand(0,40),1,0.7);
     moveBody(b);

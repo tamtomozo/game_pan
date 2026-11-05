@@ -19,9 +19,9 @@ function rockBossImpact(b,big){
 }
 defineBoss('kogeRock',{
   hp:30,
-  wake:['いただきの こげこげ大王！','つぶされないように にげまわれ！'],
-  defeat:['こげこげ大王を やっつけた！','ゴールの かごへ いこう！'],
-  hudName:'こげこげ大王',hudColors:['#ffd36a','#ff4a2a','#ffb43a'],
+  wake:[{ja:'いただきの こげこげ大王！',en:'The Burnt King of the Peak!'},{ja:'つぶされないように にげまわれ！',en:'Run so you don\'t get squashed!'}],
+  defeat:[{ja:'こげこげ大王を やっつけた！',en:'You beat the Burnt King!'},{ja:'ゴールの かごへ いこう！',en:'Go to the goal basket!'}],
+  hudName:{ja:'こげこげ大王',en:'Burnt King'},hudColors:['#ffd36a','#ff4a2a','#ffb43a'],
   hitColors:['#3a2414','#ff8a3a','#b8aea0'],finishColors:['#fff','#ffd36a','#b8aea0'],
   attacks:['press','hop','rockfall','press'],
   summonVy:-7,

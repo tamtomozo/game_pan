@@ -25,7 +25,7 @@ function stompBounce(x,y,v=-8){
   v*=lv.ph.stompMul;
   p.vy=K.jump?v-lv.ph.stompBoost:v;p.jumps=2;p.s=0.62;p.sv=0;p.y=Math.min(p.y,y-p.h);
   sfx('stomp');ring(x,y,'#fff',22);sparkle(x,y,5);dust(x,y,3);
-  popText(x,y-20,'ふみっ！','#fff');
+  popText(x,y-20,T('stomp'),'#fff');
 }
 function damageEnemy(e,dmg,kd,inv=8){
   if(e.dead||e.hit>0)return false;

@@ -1,7 +1,9 @@
 'use strict';
 // ステージ 2-2 ゆらゆら サンゴしょう（マップの きごうは js/data.js の せつめいを みてね）
-STAGES.push({name:'ゆらゆら サンゴしょう',theme:'sea',bgm:'reef',water:true,area:2,
- signs:['ながれに のると すいーっと はやく すすめるよ！','フグは ちかづくと ふくらんで トゲトゲに！ とおくから すいこもう'],
+STAGES.push({name:{ja:'ゆらゆら サンゴしょう',en:'Swaying Coral Reef'},theme:'sea',bgm:'reef',water:true,area:2,
+ signs:[
+   {ja:'ながれに のると すいーっと はやく すすめるよ！',en:'Ride the current to zoom ahead!'},
+   {ja:'フグは ちかづくと ふくらんで トゲトゲに！ とおくから すいこもう',en:'Pufferfish puff up when you get close! Inhale them from far away'}],
  chunks:[`
 ..............................
 ..............................

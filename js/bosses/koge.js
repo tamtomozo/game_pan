@@ -2,9 +2,9 @@
 // ボス：こげこげ大王（1-3 こげこげオーブン城）
 defineBoss('koge',{
   hp:30,
-  wake:['こげこげ大王 が あらわれた！','へんしんパワーで やっつけろ！'],
-  defeat:['こげこげ大王を やっつけた！','ゴールの かごへ いこう！'],
-  hudName:'こげこげ大王',hudColors:['#ffd36a','#ff4a2a','#ffb43a'],
+  wake:[{ja:'こげこげ大王 が あらわれた！',en:'The Burnt King appears!'},{ja:'へんしんパワーで やっつけろ！',en:'Use your bread powers to beat him!'}],
+  defeat:[{ja:'こげこげ大王を やっつけた！',en:'You beat the Burnt King!'},{ja:'ゴールの かごへ いこう！',en:'Go to the goal basket!'}],
+  hudName:{ja:'こげこげ大王',en:'Burnt King'},hudColors:['#ffd36a','#ff4a2a','#ffb43a'],
   hitColors:['#3a2414','#ff8a3a','#ffd36a'],finishColors:['#fff','#ffd36a','#ff8a3a'],
   attacks:['jump','charge','shoot','jump'],
   summonVy:-7,
@@ -116,5 +116,5 @@ function drawKogeBody(b,wet){
   }
   if(b.state==='stun'){c.fillStyle='#8ad0ff';c.beginPath();c.moveTo(rx-6,-80);c.quadraticCurveTo(rx+2,-68,rx-6,-64);c.quadraticCurveTo(rx-14,-68,rx-6,-80);c.fill();}
   c.restore();
-  if(b.state==='sleep')txt('ぐうぐう…',bcx+40+Math.sin(G.t*0.05)*4,b.y-10-((G.t*0.3)%14),18,'#fff','#3a1a0a');
+  if(b.state==='sleep')txt(T('bossSleep'),bcx+40+Math.sin(G.t*0.05)*4,b.y-10-((G.t*0.3)%14),18,'#fff','#3a1a0a');
 }

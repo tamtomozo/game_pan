@@ -1,8 +1,10 @@
 'use strict';
 // ステージ 2-3 まっくら しんかい（マップの きごうは js/data.js の せつめいを みてね）
-STAGES.push({name:'まっくら しんかい',theme:'deep',bgm:'deep',water:true,dark:true,area:2,boss:'kogeWater',
- signs:['まっくらで みえにくい… ひかる ものを めじるしに すすもう','チョウチンアンコウは おいかけてくる！ ふんで やっつけよう',
-   'このさきに あわに つつまれた こげこげ大王！ あわを こわせば かちだ！'],
+STAGES.push({name:{ja:'まっくら しんかい',en:'Pitch-Dark Deep Sea'},theme:'deep',bgm:'deep',water:true,dark:true,area:2,boss:'kogeWater',
+ signs:[
+   {ja:'まっくらで みえにくい… ひかる ものを めじるしに すすもう',en:'It\'s so dark… Follow the glowing things'},
+   {ja:'チョウチンアンコウは おいかけてくる！ ふんで やっつけよう',en:'Anglerfish chase you! Stomp on them'},
+   {ja:'このさきに あわに つつまれた こげこげ大王！ あわを こわせば かちだ！',en:'The Burnt King is ahead in a bubble! Pop it to win!'}],
  chunks:[`
 ..............................
 ..............................

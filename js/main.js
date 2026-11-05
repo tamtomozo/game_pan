@@ -5,7 +5,8 @@
 // =====================================================================
 // ---------- 一時停止 ----------
 const PAUSE_BTN={x:W/2-56,y:10,w:112,h:36};
-const PAUSE_ITEMS=['つづける','ステージの さいしょから','タイトルへ もどる'];
+const PAUSE_ITEMS=['pauseResume','pauseRestart','pauseTitle']; // T() の キー
+const LANG_BTN={x:W-170,y:14,w:156,h:38}; // タイトルの ことば きりかえ
 function inRect(pt,r){return pt.x>=r.x&&pt.x<=r.x+r.w&&pt.y>=r.y&&pt.y<=r.y+r.h;}
 function menuRect(i){return{x:W/2-170,y:H/2-46+i*62,w:340,h:50};}
 function updatePauseMenu(){
@@ -40,6 +41,7 @@ function update(){
   if(G.state==='title'){
     if(G.t%2===0)updateParticles();
     if(P.debug){openDebugMenu();return;}
+    if(P.lang||(G.click&&inRect(G.click,LANG_BTN))){toggleLang();sfx('sel');return;}
     if(P.start||P.jump){audioInit();startGame();}
     return;
   }
@@ -83,18 +85,18 @@ function draw(){
   if(G.flash>0){ctx.fillStyle=`rgba(255,250,220,${G.flash*0.6})`;ctx.fillRect(0,0,W,H);}
   drawHUD();drawBanner();
   if(player.dead){
-    if(lv.water)txt('ふやけちゃった・・・',W/2,H/2,48,'#eaf6ff','#0a3a6a',undefined,8);
-    else if(player.crushed)txt('つぶされちゃった・・・',W/2,H/2,48,'#fff','#3a342e',undefined,8);
-    else txt('こげちゃった・・・',W/2,H/2,48,'#fff','#3a1a0a',undefined,8);
+    if(lv.water)txt(T('deadWater'),W/2,H/2,48,'#eaf6ff','#0a3a6a',undefined,8);
+    else if(player.crushed)txt(T('deadCrush'),W/2,H/2,48,'#fff','#3a342e',undefined,8);
+    else txt(T('deadBurn'),W/2,H/2,48,'#fff','#3a1a0a',undefined,8);
   }
   if(G.state==='clear'){
     const k=Math.min(1,G.clearT/20);
     ctx.save();ctx.translate(W/2,H/2-40);ctx.scale(easeOutBack(k),easeOutBack(k));
-    txt('ステージクリア！',0,0,60,'#ffd36a','#7a3a10',undefined,10);ctx.restore();
-    if(G.clearT>40)txt('ボーナス +'+G.clearBonus,W/2,H/2+30,26,'#fff','#7a3a10');
+    txt(T('stageClear'),0,0,60,'#ffd36a','#7a3a10',undefined,10);ctx.restore();
+    if(G.clearT>40)txt(T('bonus',{n:G.clearBonus}),W/2,H/2+30,26,'#fff','#7a3a10');
     const nx=STAGES[G.stage+1];
-    if(G.clearT>90&&nx&&(nx.area||1)!==(STAGES[G.stage].area||1))txt('つぎは '+AREA_NAMES[nx.area||1]+' へ！',W/2,H/2+118,26,'#bff0ff','#0a3a6a');
-    if(G.clearT>150&&Math.floor(G.t/25)%2===0)txt('スペース で つぎへ',W/2,H/2+75,20,'#fff','#c0501a');
+    if(G.clearT>90&&nx&&(nx.area||1)!==(STAGES[G.stage].area||1))txt(T('nextArea',{name:L(AREA_NAMES[nx.area||1])}),W/2,H/2+118,26,'#bff0ff','#0a3a6a');
+    if(G.clearT>150&&Math.floor(G.t/25)%2===0)txt(T('pressNext'),W/2,H/2+75,20,'#fff','#c0501a');
   }
   if(G.state==='play')drawPauseBtn();
   if(G.paused)drawPauseMenu();

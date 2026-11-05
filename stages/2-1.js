@@ -1,8 +1,10 @@
 'use strict';
 // ステージ 2-1 ぷくぷく うみのそこ（マップの きごうは js/data.js の せつめいを みてね）
-STAGES.push({name:'ぷくぷく うみのそこ',theme:'sea',bgm:'water',water:true,area:2,waterHint:true,
- signs:['みずの なかでは Z を おすたびに すいすい およげるよ！','あわが なくなると ふやけちゃう！ シャボンや かいの あわで ほきゅうしよう',
-   'ウニは ふめないし すいこめない！ へんしんして たおそう'],
+STAGES.push({name:{ja:'ぷくぷく うみのそこ',en:'Bubbly Seafloor'},theme:'sea',bgm:'water',water:true,area:2,waterHint:true,
+ signs:[
+   {ja:'みずの なかでは Z を おすたびに すいすい およげるよ！',en:'In the water, press Z to swim!'},
+   {ja:'あわが なくなると ふやけちゃう！ シャボンや かいの あわで ほきゅうしよう',en:'Out of air, you get soggy! Grab bubbles from shells to refill'},
+   {ja:'ウニは ふめないし すいこめない！ へんしんして たおそう',en:'You can\'t stomp or inhale sea urchins! Transform to beat them'}],
  chunks:[`
 ................................
 ................................

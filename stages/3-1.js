@@ -1,10 +1,11 @@
 'use strict';
 // ステージ 3-1 ゴツゴツ さかみち（マップの きごうは js/data.js の せつめいを みてね）
-STAGES.push({name:'ゴツゴツ さかみち',theme:'rocky',bgm:'rock',area:3,rows:30,
- signs:['いわやまを てっぺんまで のぼろう！',
-   'ズシンいわは したを とおると おちてくる！ ゆれたら にげよう',
-   'おちた いわの うえには のれるよ。もどるときは いっしょに のぼれる！',
-   'ぺったんいわは じゅんばんに おちてくる。あがった すきに くぐろう！'],
+STAGES.push({name:{ja:'ゴツゴツ さかみち',en:'Rocky Slope'},theme:'rocky',bgm:'rock',area:3,rows:30,
+ signs:[
+   {ja:'いわやまを てっぺんまで のぼろう！',en:'Climb to the top of the rocky mountain!'},
+   {ja:'ズシンいわは したを とおると おちてくる！ ゆれたら にげよう',en:'Thud Rocks fall when you pass under! Run when they shake'},
+   {ja:'おちた いわの うえには のれるよ。もどるときは いっしょに のぼれる！',en:'You can stand on fallen rocks. Ride them back up!'},
+   {ja:'ぺったんいわは じゅんばんに おちてくる。あがった すきに くぐろう！',en:'Stomper Rocks drop one by one. Slip under when they rise!'}],
  chunks:[`
 ..........*.*.*...............
 ..............................
